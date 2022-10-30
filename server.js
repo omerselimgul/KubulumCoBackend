@@ -5,7 +5,10 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const bodyParser = require('body-parser')
 const { customErrorHandler } = require('./middleware/errors/customErrorHandler');
+var cors = require('cors')
 
+
+app.use(cors({origin: true, credentials: true})) // Use this after the variable declaration
 app.use(cookieParser())
 
 app.use(express.json())

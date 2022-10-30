@@ -1,13 +1,12 @@
 const dbconnection = require("./dbconnection")
 
 
-const registerHandler = async (username, password) => {
+const registerHandler = async (body) => {
 
-    let data = await dbconnection.registerRequestOfUserTable(username, password)
+    let data = await dbconnection.registerRequestOfUserTable(body)
         .then(response => {
             if (response) {
                 return response.recordsets[0]
-                // console.log(response.recordsets[0])
             }
             return null
         })
@@ -21,7 +20,6 @@ const getUserByUsername = async (username) => {
         .then(response => {
             if (response) {
                 return response.recordsets[0]
-                // console.log(response.recordsets[0])
             }
             return null
         })
