@@ -13,13 +13,13 @@ const configOdDB = {
     // trustServerCertificate: true,
 
 }
-const getUserByUsernameOfDb = async (username) => {
+const getUserByUsernameOfDb = async (Username) => {
     try {
 
         var pool = await sql.connect(configOdDB);
         var data = await pool.request()
-            .input('username', sql.VarChar, username)
-            .query("select * from TBLUSERS where username=@username");
+            .input('Username', sql.VarChar, Username)
+            .query("select * from TBLUSERS where Username=@Username");
         if (data.rowsAffected.length > 0) {
             return data;
         }
@@ -35,18 +35,23 @@ const getUserByUsernameOfDb = async (username) => {
 
     }
 }
-const registerRequestOfUserTable = async (username, password) => {
+const registerRequestOfUserTable = async (body) => {
     try {
-
+        let {Username,Password,Email,Birthdate,Cinsiyet,Universite,Bolum}=body
         var pool = await sql.connect(configOdDB);
         var data = await pool.request()
-            .input('username', sql.VarChar, username)
-            .input('password', sql.VarChar, password)
-            .query("Insert Into TBLUSERS (username,userpassword) Values (@username,@password) ");
+            .input('Username', sql.VarChar, Username)
+            .input('password', sql.VarChar, Password)
+            .input('Email', sql.VarChar, Email)
+            .input('Birthdate', sql.Date, Birthdate)
+            .input('Cinsiyet', sql.VarChar, Cinsiyet)
+            .input('Universite', sql.VarChar, Universite)
+            .input('Bolum', sql.VarChar, Bolum)
+            .query("Insert Into TBLUSERS (Username,Userpassword,Email,Birthdate,Cinsiyet,Universite,Bolum) Values (@Username,@password,@Email,@Birthdate,@Cinsiyet,@Universite,@Bolum) ");
         if (data.rowsAffected.length > 0) {
             data = await pool.request()
-                .input('username', sql.VarChar, username)
-                .query("select * from TBLUSERS where username=@username ");
+                .input('Username', sql.VarChar, Username)
+                .query("select * from TBLUSERS where Username=@Username ");
                 // bu kısım tek requestte de halledilebilir gibi ama kontrolu zor olabilir !Discuss
             // for (let i = 0; i < data.rowsAffected; i++) {
             //     effectedRow.push(data.recordset[i]);

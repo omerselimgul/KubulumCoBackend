@@ -10,10 +10,9 @@ const getAccessToRoute = async (req, res, next) => {
             req.body.username = username
             req.body.password = password
             req.body.userid = userid
-            res.send("<h1>Home Page</h1>")
+            res.send({success: true})
             next();
         } catch (error) {
-            console.log(error.name)
             next(new CustomError(error, 400))
             // res.status(401).send({ message: "Yetlisiz erisim", success: false })
         }
