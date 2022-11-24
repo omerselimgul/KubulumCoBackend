@@ -1,4 +1,4 @@
-const { CustomError } = require("d:/web/question-answer-rest-api/helpers/error/customerror")
+const { CustomError } = require("../../helpers/error/CustomError")
 const jwt = require("jsonwebtoken")
 
 const getAccessToRoute = async (req, res, next) => {
