@@ -111,7 +111,7 @@ const remove = async (id) => {
       .request()
       .input("ClubId", sql.Int, id)
       .query("DELETE FROM TBLCLUBS WHERE ClubId = @ClubId");
-
+    
   } catch(err) {
     throw err
   } finally {
