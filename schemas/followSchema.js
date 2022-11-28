@@ -15,7 +15,15 @@ const getFollowListByUserIdSchema = joi.object({
   params: {},
 });
 
+const getFollowerListByClubIdSchema = joi.object({
+  body: {},
+  query: { clubId: joi.string().required() },
+  params: {},
+});
+
+
 module.exports = {
   followSchema,
-  getFollowListByUserIdSchema
+  getFollowListByUserIdSchema,
+  getFollowerListByClubIdSchema
 };

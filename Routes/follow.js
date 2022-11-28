@@ -6,5 +6,6 @@ const schema = require("../schemas/followSchema")
 
 router.route("/").post(validate(schema.followSchema), followController.follow)
 router.route("/getFollowListByUserId").get(validate(schema.getFollowListByUserIdSchema), followController.getFollowListByUserId)
+router.route("/getFollowersByClubId").get(validate(schema.getFollowerListByClubIdSchema), followController.getFollowersByClubId)
 
 module.exports = router
