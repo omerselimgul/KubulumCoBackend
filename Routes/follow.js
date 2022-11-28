@@ -1,7 +1,10 @@
 const express = require("express")
 const router = express.Router()
 const followController = require("../controller/followController")
+const validate = require("../middleware/validate/validate")
+const schema = require("../schemas/followSchema")
 
-router.route("/").post(followController.follow)
+router.route("/").post(validate(schema.followSchema), followController.follow)
+router.route("/getFollowListByUserId").get(validate(schema.getFollowListByUserIdSchema), followController.getFollowListByUserId)
 
 module.exports = router
