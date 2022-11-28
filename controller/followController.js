@@ -1,6 +1,7 @@
 const { CustomError } = require("../helpers/error/CustomError.js");
 const followRepository = require("../repository/followRepository");
 
+
 const follow = async (req, res, next) => {
   try {
     const followData = await followRepository.getByUserIdAndClubId(req.body);
@@ -33,6 +34,29 @@ const follow = async (req, res, next) => {
   }
 };
 
+const getFollowListByUserId = async (req, res, next) => {
+  try {
+    // check if user exists
+    // TODO: add userRepository
+    // const user = await userRepository.getById(req.query.id)
+    // if(!user) {
+    //   return res.status(404).json({
+    //     success:false,
+    //     message:"Kullanıcı bulunamadı"
+    //   })
+    // }
+    const data = await followRepository.getFollowsByUserId(req.query.userId) 
+    return res.status(200).json({
+      success:true,
+      message:"Takipler listelendi",
+      data:data
+    })
+  } catch(err) {
+    return next(new CustomError(err, 500))
+  }
+}
+
 module.exports = {
   follow,
+  getFollowListByUserId
 };

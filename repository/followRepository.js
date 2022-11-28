@@ -86,8 +86,34 @@ const remove = async (removeData) => {
   }
 };
 
+
+const getFollowsByUserId = async (userId) => {
+  try {
+    var pool = await sql.connect(configOdDB)
+    var data = await pool.request()
+                            .input("UserId", sql.Int, userId)
+                            .query("SELECT f.FollowId, u.Username, u.UserId, c.ClubName, c.ClubId, uni.UniversityName " +
+                                   "FROM TBLFOLLOWS AS f INNER JOIN TBLUSERS AS u " +
+                                   "ON f.UserId = u.UserId " +
+                                   "INNER JOIN TBLCLUBS AS c " +
+                                   "ON f.ClubId = c.ClubId " +
+                                   "INNER JOIN TBLUNIVERSITIES AS uni " +
+                                   "ON c.UniversityId = uni.UniversityId " +
+                                   "WHERE f.UserId = @UserId"
+                            ) 
+    return data.recordset
+
+  } catch(err) {
+    throw err
+  } finally {
+
+  }
+}
+
+
 module.exports = {
   createFollow,
   getByUserIdAndClubId,
-  remove
+  remove,
+  getFollowsByUserId
 };
