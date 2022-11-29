@@ -3,13 +3,13 @@ const { registerHandler, getUserByUsername } = require("../DataBase/dbcontroller
 const { CustomError } = require("../helpers/error/CustomError");
 
 const PostLoginController = async (req, res, next) => {
-    var { Username, Password } = req.body;
-    if (Username && Password) {
+    var { Username, Userpassword } = req.body;
+    if (Username && Userpassword) {
         let userInfo = await getUserByUsername(Username)
-        if (userInfo && (userInfo[0]?.Userpassword) === Password) {
+        if (userInfo && (userInfo[0]?.Userpassword) === Userpassword) {
             const token = jwt.sign({
                 Username: Username,
-                Password: Password,
+                Password: Userpassword,
                 userid: userInfo[0].UserId,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'

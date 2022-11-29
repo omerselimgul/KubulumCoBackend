@@ -8,9 +8,10 @@ const getListSchema = joi.object({
 
 const createSchema = joi.object({
   body: {
-    ClubName: joi.string().required().max(50).min(5),
+    ClubName: joi.string().required().max(50).min(2),
     ClubMail: joi.string().required().max(50).min(10).email(),
-    UniversityId: joi.string().required(),
+    UniversityId: joi.number().required(),
+    Description:joi.string().max(1000)
   },
   query: {},
   params: {},
@@ -30,8 +31,9 @@ const deleteSchema = joi.object({
 
 const updateSchema = joi.object({
   body: {
-    ClubName: joi.string().max(50).min(5),
+    ClubName: joi.string().max(50).min(2),
     ClubMail: joi.string().max(50).min(10).email(),
+    Description:joi.string().max(1000)
   },
   query: {},
   params: { id: joi.string().required() },

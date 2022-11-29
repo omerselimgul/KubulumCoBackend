@@ -11,15 +11,16 @@ const configOdDB = {
 
 const createClub = async (insertData) => {
   try {
-    const { ClubName, ClubMail, UniversityId } = insertData;
+    const { ClubName, ClubMail, UniversityId, Description } = insertData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .input("ClubName", sql.NVarChar(50), ClubName)
       .input("ClubMail", sql.NVarChar(50), ClubMail)
       .input("UniversityId", sql.Int, UniversityId)
+      .input("Description", sql.NVarChar(1000), Description)
       .query(
-        "INSERT INTO TBLCLUBS (ClubName, ClubMail, UniversityId) VALUES (@ClubName, @ClubMail, @UniversityId)"
+        "INSERT INTO TBLCLUBS (ClubName, ClubMail, UniversityId, Description) VALUES (@ClubName, @ClubMail, @UniversityId, @Description)"
       );
     if (data.rowsAffected.length > 0) {
       data = await pool
@@ -61,8 +62,8 @@ const getAll = async () => {
       .request()
       .query(
         "SELECT c.ClubId, c.ClubName, c.ClubMail, c.UniversityId, u.UniversityName " +
-        "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " + 
-        "ON c.UniversityId = u.UniversityId"
+          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+          "ON c.UniversityId = u.UniversityId"
       );
     return data.recordset;
   } catch (err) {
@@ -105,48 +106,49 @@ const getByClubNameContains = async (name) => {
 };
 
 const remove = async (id) => {
-  try { 
+  try {
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .input("ClubId", sql.Int, id)
       .query("DELETE FROM TBLCLUBS WHERE ClubId = @ClubId");
-    
-  } catch(err) {
-    throw err
+  } catch (err) {
+    throw err;
   } finally {
     pool?.close();
     sql?.close();
   }
-}
+};
 
 const update = async (id, updateData) => {
-  try { 
-    const {ClubName, ClubMail} = updateData
+  try {
+    const { ClubName, ClubMail, Description } = updateData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .input("ClubId", sql.Int, id)
-      .input("ClubName", sql.NVarChar(50),ClubName)
+      .input("ClubName", sql.NVarChar(50), ClubName)
       .input("ClubMail", sql.NVarChar(50), ClubMail)
-      .query("UPDATE TBLCLUBS SET ClubName=@ClubName, ClubMail = @ClubMail WHERE ClubId = @ClubId");
-      if(data.rowsAffected.length > 0) {
-        data = await pool.request()
-                    .input("ClubId", sql.Int, id)
-                    .query("SELECT * FROM TBLCLUBS WHERE ClubId = @ClubId")
-        return data.recordset[0]
-      }else {
-        return null
-      }
-
-  } catch(err) {
-    throw err
+      .input("Description", sql.NVarChar(1000), Description)
+      .query(
+        "UPDATE TBLCLUBS SET ClubName=@ClubName, ClubMail = @ClubMail, Description = @Description WHERE ClubId = @ClubId"
+      );
+    if (data.rowsAffected.length > 0) {
+      data = await pool
+        .request()
+        .input("ClubId", sql.Int, id)
+        .query("SELECT * FROM TBLCLUBS WHERE ClubId = @ClubId");
+      return data.recordset[0];
+    } else {
+      return null;
+    }
+  } catch (err) {
+    throw err;
   } finally {
     pool?.close();
     sql?.close();
   }
-
-}
+};
 
 module.exports = {
   createClub,
@@ -155,5 +157,5 @@ module.exports = {
   getById,
   getByClubNameContains,
   remove,
-  update
+  update,
 };
