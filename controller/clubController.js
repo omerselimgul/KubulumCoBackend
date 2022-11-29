@@ -21,7 +21,7 @@ const create = async (req, res, next) => {
                 message:"Email kullanımda"
             })
         }
-
+        
         const data = await clubRepository.createClub(req.body)
         if(!data) {
             return res.status(500).json({
@@ -116,7 +116,7 @@ const update = async (req, res, next) => {
                 message:"Klup bulunamadı"
             })
         }
-        const data = await clubRepository.update(req.params.id, req.body)
+        const data = await clubRepository.update(req.params.id, {...req.body, UniversityId:club.UniversityId})
         if(!data) {
             return res.status(500).json({
                 success:false,
