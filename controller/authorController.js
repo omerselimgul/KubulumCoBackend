@@ -58,18 +58,23 @@ const deleteAuthor = async (req, res, next) => {
         let userControl = await clubInfo.find(x => x.UserId === req.body.User)
 
         if (!userControl) {
-            return next(new CustomError("Kullanıcı bulunamadı", 405))
+            return next(new CustomError("Böyle bir author bulunamadı", 405))
         }
         if (clubInfo.length <= 1) {
             return next(new CustomError("En az bir admin olmak zorundadır", 405))
         }
 
         const data = await authorRepository.deleteAuthor(req.body)
-        return res.status(200).json({
-            success: true,
-            message: "Başarılı bir şekilde silindi",
-            data: data
-        })
+        if (data !== null) {
+            return res.status(200).json({
+                success: true,
+                message: "Başarılı bir şekilde silindi",
+                data: data
+            })
+        } else {
+            return next(new CustomError("Silme işleminde hata olustu", 405))
+        }
+
     } catch (err) {
         return next(new CustomError(err, 500))
     }

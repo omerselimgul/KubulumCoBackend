@@ -15,6 +15,7 @@ const deleteAuthor = async (data) => {
             .input('UserId', sql.Int, User)
             .input('ClubId', sql.Int, Club)
             .query("delete from TBLCLUBADMIN where UserId=@UserId and ClubId=@ClubId");
+
         if (data.rowsAffected.length > 0) {
             return data.recordset;
         }
