@@ -1,5 +1,6 @@
 const { CustomError } = require("../../helpers/error/CustomError")
 const jwt = require("jsonwebtoken")
+const { getByUserId } = require("../../repository/authorRepository")
 
 const getAccessToRoute = async (req, res, next) => {
     const { token } = req.cookies
@@ -18,7 +19,22 @@ const getAccessToRoute = async (req, res, next) => {
         return next(new CustomError("Giriş yapınız", 400))
     }
 }
+const roleControl = async (req, res, next) => {
 
+    let data = await getByUserId(req.body.UserId)
+    if (data) {
+        let ClubId = req.body.Club
+        let control = await data.find(a => a.ClubId === ClubId)
+        if (control) {
+            return next()
+        } else {
+            return next(new CustomError("Yetkiniz yoktur", 400))
+        }
+    } else {
+        return next(new CustomError("Yetkiniz yoktur", 400))
+    }
+}
 module.exports = {
-    getAccessToRoute
+    getAccessToRoute,
+    roleControl
 }
