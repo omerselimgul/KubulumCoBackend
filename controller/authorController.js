@@ -65,11 +65,16 @@ const deleteAuthor = async (req, res, next) => {
         }
 
         const data = await authorRepository.deleteAuthor(req.body)
-        return res.status(200).json({
-            success: true,
-            message: "Başarılı bir şekilde silindi",
-            data: data
-        })
+        if (data) {
+            return res.status(200).json({
+                success: true,
+                message: "Başarılı bir şekilde silindi",
+                data: data
+            })
+        } else {
+            return next(new CustomError("Silme işleminde hata olustu", 405))
+        }
+
     } catch (err) {
         return next(new CustomError(err, 500))
     }
