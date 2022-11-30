@@ -1,60 +1,68 @@
 const jwt = require("jsonwebtoken")
-const { registerHandler, getUserByUsername } = require("../DataBase/dbcontrollers");
+const userRepository = require("../repository/userRepository")
 const { CustomError } = require("../helpers/error/CustomError");
 
-const PostLoginController = async (req, res, next) => {
-    var { Username, Userpassword } = req.body;
-    if (Username && Userpassword) {
-        let userInfo = await getUserByUsername(Username)
-        if (userInfo && (userInfo[0]?.Userpassword) === Userpassword) {
-            const token = jwt.sign({
-                Username: Username,
-                Password: Userpassword,
-                userid: userInfo[0].UserId,
-                expiresIn: '1d',
-                issuer: 'www.kulubum.co'
-            }, process.env.SECRET_KEY)
-            // res.header('Access-Control-Allow-Origin', req.headers.origin);
-            // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            res.cookie('token',token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "Login  basarili", data: userInfo[0], success: true })
-        } else {
-            return next(new CustomError("Bilglieri yanlış girdiniz", 403))
-        }
+
+const getById = async (req, res, next) => {
+
+    const data = await userRepository.getById(req.params.id)
+    if (data) {
+        return res.status(200).json({ message: "Kullanici bulundu", data: data, success: true })
     } else {
-        return next(new CustomError("Tüm alanları doldurunuz", 400))
+        return next(new CustomError("Kullanici Bulunumadi", 404))
     }
-
-
 }
-const RegisterControllers = async (req, res, next) => {
-    let { Username, Password } = req.body
-    if (Username === null || Password === null) {
-        next(new CustomError("Tüm alanları doldurunuz ", 405))
+
+const PostLoginController = async (req, res, next) => {
+    const { Username, Userpassword } = req.body
+    let userInfo = await userRepository.getByUserame(Username)
+    if (userInfo && (userInfo?.Userpassword) === Userpassword) {
+        const token = jwt.sign({
+            Username: Username,
+            Userpassword: Userpassword,
+            UserId: userInfo.UserId,
+            expiresIn: '1d',
+            issuer: 'www.kulubum.co'
+        }, process.env.SECRET_KEY)
+        // res.header('Access-Control-Allow-Origin', req.headers.origin);
+        // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "Login  basarili", data: userInfo, success: true })
     } else {
-        try {
-            registerHandler(req.body)
-                .then(response => {
-                    if (response) {
-                        res.status(200).json({ message: "kayit basarili", data: response[0], success: true })
-                        // .redirect('/api/login')
-                        // .redirect("http://localhost:3000/home")
-                    } else {
+        return next(new CustomError("Bilglieri yanlış girdiniz", 403))
+    }
+}
+const CreateUserControllers = async (req, res, next) => {
+    let { Username, Email } = req.body
 
-                        next(new CustomError("Kayitta hata olustu daha sonra tekrar deneyiniz!", 400))
-                    }
-                })
-                .catch(err => {
-                    next(new CustomError(err, 400))
-                })
-        } catch (error) {
-            next(new CustomError(" Hashing işleminde hata olustu lütfen daha sonra tekrar deneyiniz ", 405))
-        }
-
+    // Username Check
+    let usernameControl = await userRepository.getByUserame(Username)
+    if (usernameControl) {
+        return res.status(400).json({
+            success: false,
+            message: "Kullanıcı adı eşsiz olmalı"
+        })
     }
 
+    // EmailCheck
+    let emailControl = await userRepository.getByEmail(Email)
+    if (emailControl) {
+        return res.status(400).json({
+            success: false,
+            message: " Email adı eşsiz olmalı!"
+        })
+    }
 
+    // Register Check
+    const data = await userRepository.createdUser(req.body)
+    if (data) {
+        return res.status(200).json({ message: "kayit basarili", data: data, success: true })
+
+    } else {
+        next(new CustomError("Kayitta hata olustu daha sonra tekrar deneyiniz!", 400))
+    }
 }
 module.exports = {
+    getById,
     PostLoginController,
-    RegisterControllers
+    CreateUserControllers
 }

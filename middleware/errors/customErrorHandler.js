@@ -9,10 +9,6 @@ const customErrorHandler = ((err, req, res, next) => {
             message: "Yetkisiz Erisim"
         })
     }
-    // if(err.code===11000){
-    //     //dublicate Error
-    //     customError=new CustomError("dublicate key found check your Input",400)
-    // }
     res.status(customError.status || 500).json({
         success: false,
         message: customError.message

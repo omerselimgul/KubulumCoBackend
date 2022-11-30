@@ -1,25 +1,40 @@
 const { CustomError } = require("../../helpers/error/CustomError")
 const jwt = require("jsonwebtoken")
+const { getByUserId } = require("../../repository/authorRepository")
 
 const getAccessToRoute = async (req, res, next) => {
     const { token } = req.cookies
     if (token) {
         try {
             const decodedToken = jwt.verify(token, process.env.SECRET_KEY)
-            const { username, password, userid } = decodedToken
-            req.body.username = username
-            req.body.password = password
-            req.body.userid = userid
-            res.send({success: true})
-            next();
+            const { Username, Userpassword, UserId } = decodedToken
+            req.body.Username = Username
+            req.body.Userpassword = Userpassword
+            req.body.UserId = UserId
+            return next();
         } catch (error) {
-            next(new CustomError(error, 400))
-            // res.status(401).send({ message: "Yetlisiz erisim", success: false })
+            return next(new CustomError(error, 400))
         }
     } else {
-        res.send("Token yok")
-        // res.redirect("/api/login")
+        return next(new CustomError("Giriş yapınız", 400))
     }
 }
+const roleControl = async (req, res, next) => {
 
-module.exports = getAccessToRoute
+    let data = await getByUserId(req.body.UserId)
+    if (data) {
+        let ClubId = req.body.Club
+        let control = await data.find(a => a.ClubId === ClubId)
+        if (control) {
+            return next()
+        } else {
+            return next(new CustomError("Yetkiniz yoktur", 400))
+        }
+    } else {
+        return next(new CustomError("Yetkiniz yoktur", 400))
+    }
+}
+module.exports = {
+    getAccessToRoute,
+    roleControl
+}
