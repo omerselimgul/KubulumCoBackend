@@ -11,7 +11,7 @@ const configOdDB = {
 
 const createClub = async (insertData) => {
   try {
-    const { ClubName, ClubMail, UniversityId, Description } = insertData;
+    const { ClubName, ClubMail, UniversityId, Description, UserId } = insertData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
@@ -23,10 +23,19 @@ const createClub = async (insertData) => {
         "INSERT INTO TBLCLUBS (ClubName, ClubMail, UniversityId, Description) VALUES (@ClubName, @ClubMail, @UniversityId, @Description)"
       );
     if (data.rowsAffected.length > 0) {
+
+
       data = await pool
         .request()
         .input("ClubMail", sql.NVarChar(50), ClubMail)
         .query("SELECT * FROM TBLCLUBS WHERE ClubMail = @ClubMail");
+
+      let addAdmin = await pool
+        .request()
+        .input("UserId", sql.Int, UserId)
+        .input("ClubId", sql.Int, data.recordset[0].ClubId)
+        .query("insert into TBLCLUBADMIN (UserId,ClubId) values (@UserId,@ClubId)");
+
       return data.recordset[0];
     } else {
       return null;
@@ -62,8 +71,8 @@ const getAll = async () => {
       .request()
       .query(
         "SELECT c.ClubId, c.ClubName, c.ClubMail, c.UniversityId, u.UniversityName " +
-          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
-          "ON c.UniversityId = u.UniversityId"
+        "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+        "ON c.UniversityId = u.UniversityId"
       );
     return data.recordset;
   } catch (err) {

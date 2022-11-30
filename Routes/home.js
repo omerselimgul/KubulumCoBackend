@@ -1,8 +1,8 @@
 const express = require("express")
-const getAccessToRoute = require("../middleware/authorization/auth");
+// const getAccessToRoute = require("../middleware/authorization/auth");
 
 const router = express.Router();
 
-router.get("", getAccessToRoute) // home
+// router.get("", getAccessToRoute) // home
 
 module.exports = router;

@@ -5,11 +5,12 @@ const router = express.Router();
 const university = require("./university")
 const club = require("./club")
 const follow = require("./follow")
-
+const author = require("./author")
 router.use("/auth", login)
 router.use("/home", home)
 router.use("/university", university)
 router.use("/club", club)
 router.use("/follow", follow)
+router.use("/author", author)
 
 module.exports = router
