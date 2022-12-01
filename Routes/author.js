@@ -7,8 +7,8 @@ const authorization = require("../middleware/authorization/auth")
 
 
 
-router.get("/byuserid", validate(schema.getByUserIdSchema), authorization.getAccessToRoute, authorController.getByUserId)
-router.get("/bykulupid/:id", validate(schema.getByKulupIdSchema), authorization.getAccessToRoute, authorController.getByClubId)
-router.post("/", validate(schema.addAuthorSchema), authorization.getAccessToRoute, authorization.roleControl, authorController.addAuthor)
-router.delete("/", validate(schema.deleteAuthorSchema), authorization.getAccessToRoute, authorization.roleControl, authorController.deleteAuthor)
+router.get("/byuserid", authorization.getAccessToRoute, validate(schema.getByUserIdSchema), authorController.getByUserId)
+router.get("/bykulupid/:id", authorization.getAccessToRoute, validate(schema.getByKulupIdSchema), authorController.getByClubId)
+router.post("/", authorization.getAccessToRoute, validate(schema.addAuthorSchema), authorization.roleControl, authorController.addAuthor)
+router.delete("/", authorization.getAccessToRoute, validate(schema.deleteAuthorSchema), authorization.roleControl, authorController.deleteAuthor)
 module.exports = router;

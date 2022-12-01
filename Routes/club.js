@@ -5,7 +5,7 @@ const validate = require("../middleware/validate/validate")
 const schema = require("../schemas/clubSchema")
 const auth = require("../middleware/authorization/auth")
 
-router.route("/").post(validate(schema.createSchema), auth.getAccessToRoute, clubController.create)
+router.route("/").post(auth.getAccessToRoute, validate(schema.createSchema), clubController.create)
 router.route("/").get(validate(schema.getListSchema), clubController.list)
 router.route("/:id").get(validate(schema.getByIdSchema), clubController.getById)
 router.route("/search/getByNameContains").get(validate(schema.getByNameContainsSchema), clubController.getByClubNameContains)
