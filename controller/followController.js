@@ -36,6 +36,7 @@ const follow = async (req, res, next) => {
         success: true,
         message: "Kulup takip edildi",
         data: data,
+        followStatus:true
       });
     } else {
       // kullanıcı kulubu takip ediyor, takibi geri çek
@@ -44,6 +45,7 @@ const follow = async (req, res, next) => {
         success: true,
         message: "Takip bırakıldı",
         data: followData,
+        followStatus:false
       });
     }
   } catch (err) {
