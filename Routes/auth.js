@@ -11,6 +11,6 @@ router.post("/register", validate(schema.createSchema), authController.CreateUse
 
 // User Bura için güvenlik lazım gibi
 router.get("/:id", validate(schema.getByIdSchema), authController.getById)
-router.put("/", validate(schema.editUserSchema), auth.getAccessToRoute, authController.EditUser, authController.EditUserCookieInfo)
+router.put("/", auth.getAccessToRoute, validate(schema.editUserSchema), authController.EditUser, authController.EditUserCookieInfo)
 
 module.exports = router;

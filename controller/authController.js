@@ -18,6 +18,16 @@ const getById = async (req, res, next) => {
 }
 const EditUser = async (req, res, next) => {
     try {
+        const beforeUserData = await userRepository.getById(req.body.UserId)
+
+        console.log(beforeUserData)
+        req.body.UpdatedUsername = req.body.UpdatedUsername ?? beforeUserData.Username
+        req.body.UpdatedUserpassword = req.body.UpdatedUserpassword ?? beforeUserData.Userpassword
+        req.body.Email = req.body.Email ?? beforeUserData.Email
+        req.body.Universite = req.body.Universite ?? beforeUserData.Universite
+        req.body.Birthdate = req.body.Birthdate ?? beforeUserData.Birthdate
+        req.body.Cinsiyet = req.body.Cinsiyet ?? beforeUserData.Cinsiyet
+        req.body.Bolum = req.body.Bolum ?? beforeUserData.Bolum
         const data = await userRepository.updateUser(req.body)
         if (data !== null) {
             req.body.Username = data?.Username

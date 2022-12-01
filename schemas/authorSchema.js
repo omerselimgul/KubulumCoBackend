@@ -1,19 +1,30 @@
 const joi = require("joi");
 
 const getByUserIdSchema = joi.object({
-    body: {},
+    body: {
+        Username: joi.string(),
+        Userpassword: joi.string(),
+        UserId: joi.number(),
+    },
     query: {},
     params: {},
 });
 const getByKulupIdSchema = joi.object({
-    body: {},
+    body: {
+        Username: joi.string(),
+        Userpassword: joi.string(),
+        UserId: joi.number(),
+    },
     query: {},
     params: { id: joi.string().required() },
 });
 const addAuthorSchema = joi.object({
     body: {
         User: joi.required(),
-        Club: joi.required()
+        Club: joi.required(),
+        Username: joi.string(),
+        Userpassword: joi.string(),
+        UserId: joi.number(),
     },
     query: {},
     params: {},
@@ -21,7 +32,10 @@ const addAuthorSchema = joi.object({
 const deleteAuthorSchema = joi.object({
     body: {
         User: joi.required(),
-        Club: joi.required()
+        Club: joi.required(),
+        Username: joi.string(),
+        Userpassword: joi.string(),
+        UserId: joi.number(),
     },
     query: {},
     params: {},

@@ -15,6 +15,9 @@ const postLoginSchema = joi.object({
 });
 const editUserSchema = joi.object({
     body: {
+        Username: joi.string(),
+        Userpassword: joi.string(),
+        UserId: joi.number(),
         UpdatedUsername: joi.string().max(50).min(2),
         UpdatedUserpassword: joi.string().max(500).min(8),
         Email: joi.string().max(50).min(2).email({ tlds: { allow: false } }),

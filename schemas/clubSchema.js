@@ -8,10 +8,13 @@ const getListSchema = joi.object({
 
 const createSchema = joi.object({
   body: {
+    Username: joi.string(),
+    Userpassword: joi.string(),
+    UserId: joi.number(),
     ClubName: joi.string().required().max(50).min(2),
     ClubMail: joi.string().required().max(50).min(10).email(),
     UniversityId: joi.number().required(),
-    Description:joi.string().max(1000)
+    Description: joi.string().max(1000)
   },
   query: {},
   params: {},
@@ -33,18 +36,18 @@ const updateSchema = joi.object({
   body: {
     ClubName: joi.string().max(50).min(2),
     ClubMail: joi.string().max(50).min(10).email(),
-    Description:joi.string().max(1000)
+    Description: joi.string().max(1000)
   },
   query: {},
   params: { id: joi.string().required() },
 });
 
 const getByNameContainsSchema = joi.object({
-    body:{},
-    query:{
-        name:joi.string().required()
-    },
-    params:{}
+  body: {},
+  query: {
+    name: joi.string().required()
+  },
+  params: {}
 })
 
 module.exports = {
