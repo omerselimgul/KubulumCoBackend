@@ -13,6 +13,20 @@ const postLoginSchema = joi.object({
     query: {},
     params: {},
 });
+const editUserSchema = joi.object({
+    body: {
+        UpdatedUsername: joi.string().max(50).min(2),
+        UpdatedUserpassword: joi.string().max(500).min(8),
+        Email: joi.string().max(50).min(2).email({ tlds: { allow: false } }),
+        Universite: joi.string().max(50).min(2),
+        Birthdate: joi.date(),
+        Cinsiyet: joi.string().max(5),
+        Bolum: joi.string().max(50).min(2)
+
+    },
+    query: {},
+    params: {},
+})
 const createSchema = joi.object({
     body: {
         Username: joi.string().required().max(50).min(2),
@@ -28,5 +42,6 @@ const createSchema = joi.object({
 module.exports = {
     createSchema,
     postLoginSchema,
-    getByIdSchema
+    getByIdSchema,
+    editUserSchema
 }
