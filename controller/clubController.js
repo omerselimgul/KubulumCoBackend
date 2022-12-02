@@ -1,6 +1,7 @@
 const clubRepository = require("../repository/clubRepository")
 const { CustomError } = require("../helpers/error/CustomError.js");
 const universityRepository = require("../repository/universityRepository")
+const auth = require("../middleware/authorization/auth")
 
 const create = async (req, res, next) => {
     try {
@@ -41,8 +42,12 @@ const create = async (req, res, next) => {
 }
 
 const list = async (req, res, next) => {
+    let userId;
     try {
-        const data = await clubRepository.getAll()
+        if(req.headers.cookie) {
+            userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1])
+        }
+        const data = await clubRepository.getAll(userId)
         return res.status(200).json({
             success:true,
             message:"Klupler listelendi",

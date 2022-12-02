@@ -34,7 +34,23 @@ const roleControl = async (req, res, next) => {
         return next(new CustomError("Yetkiniz yoktur", 400))
     }
 }
+
+const getUserIdFromToken = (token) => {
+    if (token) {
+        try {
+            const decodedToken = jwt.verify(token, process.env.SECRET_KEY)
+            const { UserId } = decodedToken
+            return UserId
+        } catch (error) {
+            return null;
+        }
+    } else {
+        return null
+    }
+}
+
 module.exports = {
     getAccessToRoute,
-    roleControl
+    roleControl,
+    getUserIdFromToken
 }

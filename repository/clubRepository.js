@@ -11,7 +11,8 @@ const configOdDB = {
 
 const createClub = async (insertData) => {
   try {
-    const { ClubName, ClubMail, UniversityId, Description, UserId } = insertData;
+    const { ClubName, ClubMail, UniversityId, Description, UserId } =
+      insertData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
@@ -23,8 +24,6 @@ const createClub = async (insertData) => {
         "INSERT INTO TBLCLUBS (ClubName, ClubMail, UniversityId, Description) VALUES (@ClubName, @ClubMail, @UniversityId, @Description)"
       );
     if (data.rowsAffected.length > 0) {
-
-
       data = await pool
         .request()
         .input("ClubMail", sql.NVarChar(50), ClubMail)
@@ -34,7 +33,9 @@ const createClub = async (insertData) => {
         .request()
         .input("UserId", sql.Int, UserId)
         .input("ClubId", sql.Int, data.recordset[0].ClubId)
-        .query("insert into TBLCLUBADMIN (UserId,ClubId) values (@UserId,@ClubId)");
+        .query(
+          "insert into TBLCLUBADMIN (UserId,ClubId) values (@UserId,@ClubId)"
+        );
 
       return data.recordset[0];
     } else {
@@ -64,16 +65,33 @@ const getByEmail = async (mail) => {
   }
 };
 
-const getAll = async () => {
+const getAll = async (userId) => {
   try {
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .query(
         "SELECT c.ClubId, c.ClubName, c.ClubMail, c.UniversityId, u.UniversityName " +
-        "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
-        "ON c.UniversityId = u.UniversityId"
+          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+          "ON c.UniversityId = u.UniversityId"
       );
+    if (userId) {
+      for (let i = 0; i < data.recordset.length; i++) {
+        let followed = false;
+        let followData = await pool
+          .request()
+          .query(
+            `SELECT FollowId FROM TBLFOLLOWS where ClubId = ${data.recordset[i].ClubId} AND UserId = ${userId}`
+          );
+        if (followData.recordset[0]) {
+          followed = true;
+        }
+        data.recordset[i] = {
+          ...data.recordset[i],
+          isFollowed: followed,
+        };
+      }
+    }
     return data.recordset;
   } catch (err) {
     throw err;
