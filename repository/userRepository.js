@@ -140,11 +140,31 @@ const createdUser = async (body) => {
     }
 }
 
+const getCurrentUser = async (userData) => {
+    try {
+        const {UserId} = userData
+        var pool = await sql.connect(configOfDB);
+        var data = await pool.request()
+                            .input("UserId", sql.Int, UserId)
+                            .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
+        return data.recordset[0]
+      
+    } catch (error) {
+        throw error;
+    } finally {
+
+        pool?.close;
+        sql?.close;
+
+    }
+}
+
 module.exports = {
     getById,
     getByUserame,
     createdUser,
     getByEmail,
-    updateUser
+    updateUser,
+    getCurrentUser
 }
 

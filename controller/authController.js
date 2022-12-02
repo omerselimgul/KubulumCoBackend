@@ -2,66 +2,6 @@ const jwt = require("jsonwebtoken")
 const userRepository = require("../repository/userRepository")
 const { CustomError } = require("../helpers/error/CustomError");
 
-
-const getById = async (req, res, next) => {
-    try {
-        const data = await userRepository.getById(req.params.id)
-        if (data) {
-            return res.status(200).json({ message: "Kullanici bulundu", data: data, success: true })
-        } else {
-            return next(new CustomError("Kullanici Bulunumadi", 404))
-        }
-    } catch (error) {
-        return next(new CustomError(error, 404))
-    }
-
-}
-const EditUser = async (req, res, next) => {
-    try {
-        const beforeUserData = await userRepository.getById(req.body.UserId)
-
-        console.log(beforeUserData)
-        req.body.UpdatedUsername = req.body.UpdatedUsername ?? beforeUserData.Username
-        req.body.UpdatedUserpassword = req.body.UpdatedUserpassword ?? beforeUserData.Userpassword
-        req.body.Email = req.body.Email ?? beforeUserData.Email
-        req.body.Universite = req.body.Universite ?? beforeUserData.Universite
-        req.body.Birthdate = req.body.Birthdate ?? beforeUserData.Birthdate
-        req.body.Cinsiyet = req.body.Cinsiyet ?? beforeUserData.Cinsiyet
-        req.body.Bolum = req.body.Bolum ?? beforeUserData.Bolum
-        const data = await userRepository.updateUser(req.body)
-        if (data !== null) {
-            req.body.Username = data?.Username
-            req.body.Userpassword = data?.Userpassword
-            next()
-            // return res.status(200).json({ message: "Kullanici güncellendi", data: data, success: true })
-        } else {
-            return next(new CustomError("Kullanici güncellenemedi", 404))
-        }
-    } catch (Error) {
-        return next(new CustomError(Error, 404))
-    }
-
-}
-const EditUserCookieInfo = async (req, res, next) => {
-    try {
-        if (req?.body?.Username && req?.body?.Userpassword && req?.body?.UserId) {
-            const token = jwt.sign({
-                Username: req?.body?.Username,
-                Userpassword: req?.body?.Userpassword,
-                UserId: req?.body?.UserId,
-                expiresIn: '1d',
-                issuer: 'www.kulubum.co'
-            }, process.env.SECRET_KEY)
-            // res.header('Access-Control-Allow-Origin', req.headers.origin);
-            // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "İşlem  basarili", data: req.body, success: true })
-        } else {
-            return next(new CustomError("İşlem sırasında bir hata olustu", 403))
-        }
-    } catch (error) {
-        return next(new CustomError(error, 403))
-    }
-}
 const PostLoginController = async (req, res, next) => {
     try {
         const { Username, Userpassword } = req.body
@@ -119,9 +59,6 @@ const CreateUserControllers = async (req, res, next) => {
 
 }
 module.exports = {
-    getById,
     PostLoginController,
     CreateUserControllers,
-    EditUser,
-    EditUserCookieInfo
 }
