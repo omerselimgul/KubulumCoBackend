@@ -41,10 +41,16 @@ const createSchema = joi.object({
     params: {},
 });
 
+const getCurrentUserSchema = joi.object({
+    query:{},
+    body:{},
+    params:{}
+})
 
 module.exports = {
     createSchema,
     postLoginSchema,
     getByIdSchema,
-    editUserSchema
+    editUserSchema,
+    getCurrentUserSchema
 }
