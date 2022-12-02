@@ -10,7 +10,7 @@ router.post("/login", validate(schema.postLoginSchema), authController.PostLogin
 router.post("/register", validate(schema.createSchema), authController.CreateUserControllers)
 
 // User Bura için güvenlik lazım gibi
-router.get("/:id", validate(schema.getByIdSchema), authController.getById)
-router.put("/", auth.getAccessToRoute, validate(schema.editUserSchema), authController.EditUser, authController.EditUserCookieInfo)
+//router.get("/:id", validate(schema.getByIdSchema), authController.getById)
+//router.put("/", auth.getAccessToRoute, validate(schema.editUserSchema), authController.EditUser, authController.EditUserCookieInfo)
 
 module.exports = router;
