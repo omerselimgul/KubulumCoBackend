@@ -2,6 +2,7 @@ const clubRepository = require("../repository/clubRepository")
 const { CustomError } = require("../helpers/error/CustomError.js");
 const universityRepository = require("../repository/universityRepository")
 const auth = require("../middleware/authorization/auth")
+const paginate = require("../helpers/pagination/paginate")
 
 const create = async (req, res, next) => {
     try {
@@ -47,7 +48,7 @@ const list = async (req, res, next) => {
         if(req.headers.cookie) {
             userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1])
         }
-        const data = await clubRepository.getAll(userId)
+        const data = paginate(req, await clubRepository.getAll(userId))
         return res.status(200).json({
             success:true,
             message:"Klupler listelendi",

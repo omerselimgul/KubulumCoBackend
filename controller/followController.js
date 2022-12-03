@@ -2,6 +2,7 @@ const { CustomError } = require("../helpers/error/CustomError.js");
 const followRepository = require("../repository/followRepository");
 const clubRepository = require("../repository/clubRepository");
 const userRepository = require("../repository/userRepository");
+const paginate = require("../helpers/pagination/paginate")
 
 const follow = async (req, res, next) => {
   try {
@@ -56,14 +57,14 @@ const follow = async (req, res, next) => {
 const getFollowListByUserId = async (req, res, next) => {
   try {
     // check if user exists
-    const user = await userRepository.getById(req.query.userId);
+    const user = await userRepository.getById(req.query.userId)
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "Kullanıcı bulunamadı",
       });
     }
-    const data = await followRepository.getFollowsByUserId(req.query.userId);
+    const data = paginate(req, await followRepository.getFollowsByUserId(req.query.userId));
     return res.status(200).json({
       success: true,
       message: "Takipler listelendi",
@@ -83,7 +84,7 @@ const getFollowersByClubId = async (req, res, next) => {
         message: "Kulup bulunamadı",
       });
     }
-    const data = await followRepository.getFollowersByClubId(req.query.clubId);
+    const data = paginate(req, await followRepository.getFollowersByClubId(req.query.clubId));
     return res.status(200).json({
       success: true,
       message: "Takipçiler listelendi",
