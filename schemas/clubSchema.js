@@ -1,8 +1,11 @@
 const joi = require("joi");
+const paginateProps = require("./paginationSchema");
 
 const getListSchema = joi.object({
   body: {},
-  query: {},
+  query: {
+    ...paginateProps,
+  },
   params: {},
 });
 
@@ -14,7 +17,7 @@ const createSchema = joi.object({
     ClubName: joi.string().required().max(50).min(2),
     ClubMail: joi.string().required().max(50).min(10).email(),
     UniversityId: joi.number().required(),
-    Description: joi.string().max(1000)
+    Description: joi.string().max(1000),
   },
   query: {},
   params: {},
@@ -36,7 +39,7 @@ const updateSchema = joi.object({
   body: {
     ClubName: joi.string().max(50).min(2),
     ClubMail: joi.string().max(50).min(10).email(),
-    Description: joi.string().max(1000)
+    Description: joi.string().max(1000),
   },
   query: {},
   params: { id: joi.string().required() },
@@ -45,10 +48,10 @@ const updateSchema = joi.object({
 const getByNameContainsSchema = joi.object({
   body: {},
   query: {
-    name: joi.string().required()
+    name: joi.string().required(),
   },
-  params: {}
-})
+  params: {},
+});
 
 module.exports = {
   getListSchema,
@@ -56,5 +59,5 @@ module.exports = {
   getByIdSchema,
   deleteSchema,
   updateSchema,
-  getByNameContainsSchema
+  getByNameContainsSchema,
 };
