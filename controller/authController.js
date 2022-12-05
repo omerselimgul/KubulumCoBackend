@@ -14,9 +14,8 @@ const PostLoginController = async (req, res, next) => {
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
-            // res.header('Access-Control-Allow-Origin', req.headers.origin);
-            // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            res.cookie('token', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "Login  basarili", data: userInfo, success: true })
+
+            res.cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "Login  basarili", data: userInfo, success: true })
         } else {
             return next(new CustomError("Bilglieri yanlış girdiniz", 403))
         }
@@ -24,6 +23,18 @@ const PostLoginController = async (req, res, next) => {
         return next(new CustomError(error, 403))
     }
 
+}
+const DeleteCookie = async (req, res, next) => {
+    try {
+        cookie = req.cookies;
+        if (cookie?.KulubumCo) {
+            res.clearCookie('KulubumCo')
+        }
+        res.json({ message: "Çıkış basarili", success: true });
+
+    } catch (error) {
+        return next(new CustomError(error, 500))
+    }
 }
 const CreateUserControllers = async (req, res, next) => {
 
@@ -61,4 +72,5 @@ const CreateUserControllers = async (req, res, next) => {
 module.exports = {
     PostLoginController,
     CreateUserControllers,
+    DeleteCookie
 }
