@@ -5,6 +5,11 @@ const getByIdSchema = joi.object({
     query: {},
     params: { id: joi.string().required() },
 });
+const getLogoutSchema = joi.object({
+    body: {},
+    query: {},
+    params: {},
+});
 const postLoginSchema = joi.object({
     body: {
         Username: joi.string().required().max(50).min(2),
@@ -42,9 +47,9 @@ const createSchema = joi.object({
 });
 
 const getCurrentUserSchema = joi.object({
-    query:{},
-    body:{},
-    params:{}
+    query: {},
+    body: {},
+    params: {}
 })
 
 module.exports = {
@@ -52,5 +57,6 @@ module.exports = {
     postLoginSchema,
     getByIdSchema,
     editUserSchema,
-    getCurrentUserSchema
+    getCurrentUserSchema,
+    getLogoutSchema
 }
