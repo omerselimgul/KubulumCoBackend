@@ -17,7 +17,7 @@ router
   .get(validate(schema.getByIdSchema), userController.getById);
 router.put(
   "/",
-  auth.getAccessToRoute,
+  auth.getOnlyUserIdFromTokenToBody,
   validate(schema.editUserSchema),
   userController.EditUser,
   userController.EditUserCookieInfo

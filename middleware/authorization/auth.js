@@ -3,13 +3,28 @@ const jwt = require("jsonwebtoken")
 const { getByUserId } = require("../../repository/authorRepository")
 
 const getAccessToRoute = async (req, res, next) => {
-    const { token } = req.cookies
-    if (token) {
+    const { KulubumCo } = req.cookies
+    if (KulubumCo) {
         try {
-            const decodedToken = jwt.verify(token, process.env.SECRET_KEY)
+            const decodedToken = jwt.verify(KulubumCo, process.env.SECRET_KEY)
             const { Username, Userpassword, UserId } = decodedToken
             req.body.Username = Username
             req.body.Userpassword = Userpassword
+            req.body.UserId = UserId
+            return next();
+        } catch (error) {
+            return next(new CustomError(error, 400))
+        }
+    } else {
+        return next(new CustomError("Giriş yapınız", 400))
+    }
+}
+const getOnlyUserIdFromTokenToBody = async (req, res, next) => {
+    const { KulubumCo } = req.cookies
+    if (KulubumCo) {
+        try {
+            const decodedToken = jwt.verify(KulubumCo, process.env.SECRET_KEY)
+            const { UserId } = decodedToken
             req.body.UserId = UserId
             return next();
         } catch (error) {
@@ -52,5 +67,6 @@ const getUserIdFromToken = (token) => {
 module.exports = {
     getAccessToRoute,
     roleControl,
-    getUserIdFromToken
+    getUserIdFromToken,
+    getOnlyUserIdFromTokenToBody
 }
