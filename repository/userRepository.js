@@ -69,22 +69,22 @@ const getByUserame = async (Username) => {
 }
 const updateUser = async (body) => {
     try {
-        let { UpdatedUsername, UpdatedUserpassword, Email, Birthdate, Cinsiyet, Universite, Bolum, UserId } = body
+        let { Username, Userpassword, Email, Birthdate, Cinsiyet, Universite, Bolum, UserId } = body
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
-            .input('UpdatedUsername', sql.NVarChar(50), UpdatedUsername)
-            .input('UpdatedUserpassword', sql.NVarChar(500), UpdatedUserpassword)
+            .input('Username', sql.NVarChar(50), Username)
+            .input('Userpassword', sql.NVarChar(500), Userpassword)
             .input('Email', sql.NVarChar(50), Email)
             .input('Universite', sql.NVarChar(50), Universite)
             .input('Birthdate', sql.Date, Birthdate)
             .input('Cinsiyet', sql.NVarChar(5), Cinsiyet)
             .input('Bolum', sql.NVarChar(50), Bolum)
             .input('UserId', sql.Int, UserId)
-            .query("UPDATE TBLUSERS SET Username=@UpdatedUsername,Userpassword=@UpdatedUserpassword,Universite=@Universite,Bolum=@Bolum,Cinsiyet=@Cinsiyet, Birthdate=@Birthdate ,Email=@Email WHERE UserId=@UserId")
+            .query("UPDATE TBLUSERS SET Username=@Username,Userpassword=@Userpassword,Universite=@Universite,Bolum=@Bolum,Cinsiyet=@Cinsiyet, Birthdate=@Birthdate ,Email=@Email WHERE UserId=@UserId")
         // insert into TBLUSERS(Username, Userpassword, Universite, Bolum, Cinsiyet, Birthdate, Email) values(@Username, @Userpassword, @Universite, @Bolum, @Cinsiyet, @Birthdate, @Email) where UserId =@UserID ");
         if (data.rowsAffected.length > 0) {
             data = await pool.request()
-                .input('Username', sql.NVarChar(50), UpdatedUsername)
+                .input('Username', sql.NVarChar(50), Username)
                 .query("select * from TBLUSERS where Username=@Username ");
             // bu kısım tek requestte de halledilebilir gibi ama kontrolu zor olabilir !Discuss
             // for (let i = 0; i < data.rowsAffected; i++) {
@@ -142,13 +142,13 @@ const createdUser = async (body) => {
 
 const getCurrentUser = async (userData) => {
     try {
-        const {UserId} = userData
+        const { UserId } = userData
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
-                            .input("UserId", sql.Int, UserId)
-                            .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
+            .input("UserId", sql.Int, UserId)
+            .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
         return data.recordset[0]
-      
+
     } catch (error) {
         throw error;
     } finally {
