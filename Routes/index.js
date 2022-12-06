@@ -14,5 +14,11 @@ router.use("/club", club)
 router.use("/follow", follow)
 router.use("/author", author)
 router.use("/user", user)
+router.get("*", (req, res) => {
+    return res.status(404).json({
+        success:false,
+        message:"Böyle bir sayfa bulunamadı."
+    })
+})
 
 module.exports = router
