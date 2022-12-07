@@ -1,10 +1,22 @@
 // repository import et
 const universityRepository = require("../repository/universityRepository");
 const { CustomError } = require("../helpers/error/CustomError.js");
+const validate = require("../helpers/validate/validate")
+const schema = require("../schemas/universitySchema")
 
 const create = async (req, res, next) => {
   try {
     // TODO: daha önce eklenmiş mi? kontrol et
+       const {success,message} = validate(schema.createSchema, req)
+      if(!success) {
+        return res.status(400).json({
+          success:false,
+          message:message
+        })
+      }
+      if(req.file?.filename) {
+        req.body.media = req.file?.filename
+      }
     const data = await universityRepository.createUniversity(req.body);
     if (!data) {
       return res.status(500).json({

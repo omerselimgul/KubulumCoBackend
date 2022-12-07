@@ -12,13 +12,14 @@ const configOdDB = {
 // sql query
 const createUniversity = async (insertData) => {
   try {
-    const { UniversityName } = insertData;
+    const { UniversityName, media} = insertData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .input("UniversityName", sql.NVarChar(50), UniversityName)
+      .input("Media", sql.NVarChar, media)
       .query(
-        "INSERT INTO TBLUNIVERSITIES (UniversityName) values (@UniversityName)"
+        "INSERT INTO TBLUNIVERSITIES (UniversityName, UniversityLogo) values (@UniversityName, @Media)"
       );
     if (data.rowsAffected.length > 0) {
       data = await pool
