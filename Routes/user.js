@@ -23,4 +23,13 @@ router.put(
   userController.EditUserCookieInfo
 );
 
+router
+  .route("/password/change")
+  .post(
+    auth.getAccessToRoute,
+    validate(schema.changePasswordSchema),
+    userController.changePassword,
+    userController.EditUserCookieInfo
+  );
+
 module.exports = router;

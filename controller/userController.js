@@ -78,9 +78,51 @@ const EditUserCookieInfo = async (req, res, next) => {
     }
 }
 
+const changePassword = async (req, res, next) => {
+    try {
+        const user = await userRepository.getById(req.body.UserId) 
+        if(!user) {
+            return res.status(404).json({
+                success:false,
+                message:"Kullanıcı bulunamadı."
+            })
+        }
+        if(req.body.oldPassword !== req.body.Userpassword) {
+            return res.status(400).json({
+                success:false,
+                message:"Eski şifrenizi hatalı girdiniz."
+            })
+        }
+        if(req.body.newPassword === req.body.Userpassword) {
+            return res.status(400).json({
+                success:false,
+                message:"Eski şifreniz ve yeni şifreniz aynı olamaz."
+            })
+        }
+        if(req.body.newPassword !== req.body.newPasswordConfirm) {
+            return res.status(400).json({
+                success:false,
+                message:"Yeni şifre ve yeni şifre tekrarı birbiri ile uyuşmuyor."
+            })
+        }
+        const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
+        if(data) {
+            req.body.Userpassword = data.Userpassword
+            next()
+        } 
+        return res.status(500).json({
+            success:false,
+            message:"Bir hata oluştu"
+        })
+    } catch(err) {
+        return next(new CustomError(err, 500))
+    }
+}
+
 module.exports = {
     getCurrentUser,
     getById,
     EditUser,
-    EditUserCookieInfo
+    EditUserCookieInfo,
+    changePassword
 }
