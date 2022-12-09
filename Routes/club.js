@@ -4,8 +4,10 @@ const clubController = require("../controller/clubController")
 const validate = require("../middleware/validate/validate")
 const schema = require("../schemas/clubSchema")
 const auth = require("../middleware/authorization/auth")
+const upload = require("../middleware/upload/upload")
+const uploadConfig = {folder : '/club'}
 
-router.route("/").post(auth.getAccessToRoute, validate(schema.createSchema), clubController.create)
+router.route("/").post(auth.getAccessToRoute, upload(uploadConfig).single("media"), clubController.create)
 router.route("/").get(validate(schema.getListSchema), clubController.list)
 router.route("/:id").get(validate(schema.getByIdSchema), clubController.getById)
 router.route("/search/getByNameContains").get(validate(schema.getByNameContainsSchema), clubController.getByClubNameContains)

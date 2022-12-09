@@ -3,6 +3,8 @@ const { CustomError } = require("../helpers/error/CustomError.js");
 const universityRepository = require("../repository/universityRepository")
 const auth = require("../middleware/authorization/auth")
 const paginate = require("../helpers/pagination/paginate")
+const validate = require("../helpers/validate/validate")
+const schema = require("../schemas/clubSchema")
 
 const create = async (req, res, next) => {
     try {
@@ -23,7 +25,21 @@ const create = async (req, res, next) => {
                 message:"Email kullanımda"
             })
         }
-        
+        const {success,message} = validate(schema.createSchema, req)
+        if(!success) {
+          return res.status(400).json({
+            success:false,
+            message:message
+          })
+        }
+        if(req.file?.filename) {
+            req.body.media = req.file?.filename
+        }
+        const userId = auth.getUserIdFromToken(req.cookies.KulubumCo)
+        req.body = {
+            ...req.body,
+            UserId: userId
+        }
         const data = await clubRepository.createClub(req.body)
         if(!data) {
             return res.status(500).json({
