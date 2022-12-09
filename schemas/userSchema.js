@@ -50,11 +50,25 @@ const getCurrentUserSchema = joi.object({
     params: {}
 })
 
+const changePasswordSchema = joi.object({
+    body:{
+        oldPassword:joi.string().required().min(8).max(500),
+        newPassword:joi.string().required().min(8).max(500),
+        newPasswordConfirm: joi.string().required().max(500).min(8),
+        Username: joi.string().max(50).min(2),
+        Userpassword: joi.string().max(500).min(8),
+        UserId: joi.number(),
+    },
+    query:{},
+    params:{}
+})
+
 module.exports = {
     createSchema,
     postLoginSchema,
     getByIdSchema,
     editUserSchema,
     getCurrentUserSchema,
-    getLogoutSchema
+    getLogoutSchema,
+    changePasswordSchema
 }

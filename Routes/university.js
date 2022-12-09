@@ -7,7 +7,7 @@ const upload = require("../middleware/upload/upload")
 const uploadConfig = {folder : '/university'}
 const authorization = require("../middleware/authorization/auth")
 
-router.route("/").post(upload(uploadConfig).single("media"), universityController.create)
+router.route("/").post(authorization.getAccessToRoute,upload(uploadConfig).single("media"), universityController.create)
 router.route("/").get(validate(schema.getListSchema), universityController.list)
 router.route("/:id").get(validate(schema.getByIdSchema), universityController.getById)
 router.route("/search/getByName").get(validate(schema.getByNameContainsSchema), universityController.getByNameContains)
