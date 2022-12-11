@@ -69,7 +69,7 @@ const EditUserCookieInfo = async (req, res, next) => {
             }, process.env.SECRET_KEY)
             // res.header('Access-Control-Allow-Origin', req.headers.origin);
             // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-            res.cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true }).json({ message: "İşlem  basarili", data: req.body, success: true })
+            res.cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000 }).json({ message: "İşlem  basarili", data: req.body, success: true })
         } else {
             return next(new CustomError("İşlem sırasında bir hata olustu", 403))
         }
@@ -80,41 +80,41 @@ const EditUserCookieInfo = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
     try {
-        const user = await userRepository.getById(req.body.UserId) 
-        if(!user) {
+        const user = await userRepository.getById(req.body.UserId)
+        if (!user) {
             return res.status(404).json({
-                success:false,
-                message:"Kullanıcı bulunamadı."
+                success: false,
+                message: "Kullanıcı bulunamadı."
             })
         }
-        if(req.body.oldPassword !== req.body.Userpassword) {
+        if (req.body.oldPassword !== req.body.Userpassword) {
             return res.status(400).json({
-                success:false,
-                message:"Eski şifrenizi hatalı girdiniz."
+                success: false,
+                message: "Eski şifrenizi hatalı girdiniz."
             })
         }
-        if(req.body.newPassword === req.body.Userpassword) {
+        if (req.body.newPassword === req.body.Userpassword) {
             return res.status(400).json({
-                success:false,
-                message:"Eski şifreniz ve yeni şifreniz aynı olamaz."
+                success: false,
+                message: "Eski şifreniz ve yeni şifreniz aynı olamaz."
             })
         }
-        if(req.body.newPassword !== req.body.newPasswordConfirm) {
+        if (req.body.newPassword !== req.body.newPasswordConfirm) {
             return res.status(400).json({
-                success:false,
-                message:"Yeni şifre ve yeni şifre tekrarı birbiri ile uyuşmuyor."
+                success: false,
+                message: "Yeni şifre ve yeni şifre tekrarı birbiri ile uyuşmuyor."
             })
         }
         const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
-        if(data) {
+        if (data) {
             req.body.Userpassword = data.Userpassword
             next()
-        } 
+        }
         return res.status(500).json({
-            success:false,
-            message:"Bir hata oluştu"
+            success: false,
+            message: "Bir hata oluştu"
         })
-    } catch(err) {
+    } catch (err) {
         return next(new CustomError(err, 500))
     }
 }
