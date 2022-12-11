@@ -19,7 +19,7 @@ const PostLoginController = async (req, res, next) => {
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
-
+            delete userInfo?.Userpassword
             res.cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000 }).json({ message: "Login  basarili", data: userInfo, success: true })
         } else {
             return next(new CustomError("Bilglieri yanlış girdiniz", 403))
