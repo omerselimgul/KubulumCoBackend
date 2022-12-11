@@ -11,6 +11,10 @@ const PostLoginController = async (req, res, next) => {
                 Username: Username,
                 Userpassword: Userpassword,
                 UserId: userInfo.UserId,
+                Email:userInfo.Email,
+                Birthdate:userInfo.Birthdate,
+                University: userInfo.University,
+                Department: userInfo.Bolum,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)

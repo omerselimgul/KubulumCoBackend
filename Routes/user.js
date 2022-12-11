@@ -4,6 +4,8 @@ const validate = require("../middleware/validate/validate");
 const auth = require("../middleware/authorization/auth");
 const userController = require("../controller/userController");
 const schema = require("../schemas/userSchema");
+const upload = require("../middleware/upload/upload")
+const uploadConfig = {folder : '/club'}
 
 router
   .route("/profile/currentuser")
@@ -31,5 +33,7 @@ router
     userController.changePassword,
     userController.EditUserCookieInfo
   );
+
+router.route("/profileimage/update").post(auth.getAccessToRoute)
 
 module.exports = router;

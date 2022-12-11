@@ -119,6 +119,11 @@ const changePassword = async (req, res, next) => {
     }
 }
 
+
+const updateProfileImage = async (req, res, next) => {
+
+}
+
 module.exports = {
     getCurrentUser,
     getById,

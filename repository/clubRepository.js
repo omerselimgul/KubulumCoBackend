@@ -71,7 +71,7 @@ const getAll = async (userId) => {
     var data = await pool
       .request()
       .query(
-        "SELECT c.ClubId, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, u.UniversityName, u.UniversityLogo " +
+        "SELECT c.ClubId, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
           "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
           "ON c.UniversityId = u.UniversityId"
       );

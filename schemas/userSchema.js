@@ -38,7 +38,7 @@ const createSchema = joi.object({
         Username: joi.string().required().max(50).min(2),
         Userpassword: joi.string().required().max(500).min(8),
         Email: joi.string().required().max(50).min(2).email({ tlds: { allow: false } }),
-        Universite: joi.string().required().max(50).min(2),
+        Universite: joi.number().required(),
     },
     query: {},
     params: {},
@@ -46,7 +46,11 @@ const createSchema = joi.object({
 
 const getCurrentUserSchema = joi.object({
     query: {},
-    body: {},
+    body: {
+        Username:joi.string(),
+        Userpassword:joi.string(),
+        UserId:joi.number(),
+    },
     params: {}
 })
 
