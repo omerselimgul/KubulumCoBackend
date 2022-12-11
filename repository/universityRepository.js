@@ -43,7 +43,7 @@ const createUniversity = async (insertData) => {
 const getAllUniversities = async () => {
   try {
     var pool = await sql.connect(configOdDB);
-    var data = await pool.request().query("SELECT * FROM TBLUNIVERSITIES");
+    var data = await pool.request().query("SELECT u.*, (SELECT COUNT(*) FROM TBLCLUBS WHERE UniversityId = u.UniversityId) AS ClubAmount FROM TBLUNIVERSITIES u ");
     return data.recordset;
   } catch (err) {
     throw err;
@@ -59,7 +59,7 @@ const getById = async (id) => {
     var data = await pool
       .request()
      // .input("UniversityId", sql.Int, id)
-      .query(`SELECT * FROM TBLUNIVERSITIES WHERE UniversityId=${id}`);
+      .query(`SELECT u.*, (SELECT COUNT(*) FROM TBLCLUBS WHERE UniversityId=${id}) AS ClubAmount FROM TBLUNIVERSITIES u WHERE UniversityId=${id}`);
     return data.recordset[0]
   } catch (err) {
     throw err;
