@@ -13,7 +13,8 @@ const PostLoginController = async (req, res, next) => {
                 UserId: userInfo.UserId,
                 Email:userInfo.Email,
                 Birthdate:userInfo.Birthdate,
-                University: userInfo.University,
+                UniversityId: userInfo.Universite,
+                UniversityName: userInfo.UniversityName,
                 Department: userInfo.Bolum,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'

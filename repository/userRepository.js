@@ -55,7 +55,7 @@ const getByUserame = async (Username) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Username', sql.NVarChar(50), Username)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName "+ 
+            .query("SELECT u.*, uni.UniversityName "+ 
             "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " + 
             "WHERE Username = @Username");
         if (data.rowsAffected.length > 0) {
