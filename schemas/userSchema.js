@@ -27,7 +27,8 @@ const editUserSchema = joi.object({
         Universite: joi.string().max(50).min(2),
         Birthdate: joi.date(),
         Cinsiyet: joi.string().max(5),
-        Bolum: joi.string().max(50).min(2)
+        Bolum: joi.string().max(50).min(2),
+        media:joi.string()
 
     },
     query: {},
