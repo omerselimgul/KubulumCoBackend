@@ -12,7 +12,6 @@ const getListSchema = joi.object({
 const createSchema = joi.object({
   body: {
     Username: joi.string(),
-    Userpassword: joi.string(),
     UserId: joi.number(),
     ClubName: joi.string().required().max(50).min(2),
     ClubMail: joi.string().required().max(50).min(10).email(),

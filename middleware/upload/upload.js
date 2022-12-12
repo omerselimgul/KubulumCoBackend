@@ -15,6 +15,7 @@ const upload = ({ folder }) =>
         file.filename = `${newDate + "_" + uuid.v4().split("-")[0]}.${extension}`;
         callback(null, file.filename);
       },
+
     }),
     fileFilter: function (req, file, callback) {
       const fileType = file?.mimetype.split("/")[0];

@@ -1,7 +1,6 @@
 const { CustomError } = require("../helpers/error/CustomError")
 const userRepository = require("../repository/userRepository")
 const jwt = require("jsonwebtoken")
-
 const getCurrentUser = async (req, res, next) => {
     try {
         const data = await userRepository.getCurrentUser(req.body)
@@ -36,17 +35,18 @@ const getById = async (req, res, next) => {
 
 const EditUser = async (req, res, next) => {
     try {
-        const beforeUserData = await userRepository.getById(req.body.UserId)
 
+        const beforeUserData = await userRepository.getById(req.body.UserId)
         req.body.Username = req.body.Username ?? beforeUserData.Username
-        req.body.Userpassword = req.body.Userpassword ?? beforeUserData.Userpassword
         req.body.Email = req.body.Email ?? beforeUserData.Email
-        req.body.Universite = req.body.Universite ?? beforeUserData.Universite
+        req.body.Universite = req.body.University ?? beforeUserData.UniversityId
         req.body.Birthdate = req.body.Birthdate ?? beforeUserData.Birthdate
         req.body.Cinsiyet = req.body.Cinsiyet ?? beforeUserData.Cinsiyet
         req.body.Bolum = req.body.Bolum ?? beforeUserData.Bolum
         const data = await userRepository.updateUser(req.body)
+
         if (data !== null) {
+            delete data?.Userpassword
             next()
             // return res.status(200).json({ message: "Kullanici güncellendi", data: data, success: true })
         } else {
@@ -59,10 +59,9 @@ const EditUser = async (req, res, next) => {
 }
 const EditUserCookieInfo = async (req, res, next) => {
     try {
-        if (req?.body?.Username && req?.body?.Userpassword && req?.body?.UserId) {
+        if (req?.body?.Username && req?.body?.UserId) {
             const token = jwt.sign({
                 Username: req?.body?.Username,
-                Userpassword: req?.body?.Userpassword,
                 UserId: req?.body?.UserId,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
@@ -80,14 +79,14 @@ const EditUserCookieInfo = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
     try {
-        const user = await userRepository.getById(req.body.UserId)
+        const user = await userRepository.getUserByIdWithPassword(req.body.UserId)
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "Kullanıcı bulunamadı."
             })
         }
-        if (req.body.oldPassword !== req.body.Userpassword) {
+        if (req.body.oldPassword !== user?.Userpassword) {
             return res.status(400).json({
                 success: false,
                 message: "Eski şifrenizi hatalı girdiniz."
@@ -107,13 +106,13 @@ const changePassword = async (req, res, next) => {
         }
         const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
         if (data) {
-            req.body.Userpassword = data.Userpassword
             next()
+        } else {
+            return res.status(500).json({
+                success: false,
+                message: "Bir hata oluştu"
+            })
         }
-        return res.status(500).json({
-            success: false,
-            message: "Bir hata oluştu"
-        })
     } catch (err) {
         return next(new CustomError(err, 500))
     }

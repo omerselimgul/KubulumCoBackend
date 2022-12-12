@@ -21,14 +21,13 @@ const postLoginSchema = joi.object({
 const editUserSchema = joi.object({
     body: {
         Username: joi.string().max(50).min(2),
-        Userpassword: joi.string().max(500).min(8),
         UserId: joi.number(),
         Email: joi.string().max(50).min(2).email({ tlds: { allow: false } }),
         Universite: joi.string().max(50).min(2),
         Birthdate: joi.date(),
         Cinsiyet: joi.string().max(5),
         Bolum: joi.string().max(50).min(2),
-        media:joi.string()
+        media: joi.string()
 
     },
     query: {},
@@ -48,24 +47,22 @@ const createSchema = joi.object({
 const getCurrentUserSchema = joi.object({
     query: {},
     body: {
-        Username:joi.string(),
-        Userpassword:joi.string(),
-        UserId:joi.number(),
+        Username: joi.string(),
+        UserId: joi.number(),
     },
     params: {}
 })
 
 const changePasswordSchema = joi.object({
-    body:{
-        oldPassword:joi.string().required().min(8).max(500),
-        newPassword:joi.string().required().min(8).max(500),
+    body: {
+        oldPassword: joi.string().required().min(8).max(500),
+        newPassword: joi.string().required().min(8).max(500),
         newPasswordConfirm: joi.string().required().max(500).min(8),
         Username: joi.string().max(50).min(2),
-        Userpassword: joi.string().max(500).min(8),
         UserId: joi.number(),
     },
-    query:{},
-    params:{}
+    query: {},
+    params: {}
 })
 
 module.exports = {

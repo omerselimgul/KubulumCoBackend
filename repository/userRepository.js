@@ -12,9 +12,9 @@ const getById = async (UserId) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('UserId', sql.Int, UserId)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, u.ProfileImg, uni.UniversityId, uni.UniversityName "+ 
-                   "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " + 
-                   "WHERE UserId = @UserId");
+            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, u.ProfileImg, uni.UniversityId, uni.UniversityName " +
+                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                "WHERE UserId = @UserId");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -33,9 +33,9 @@ const getByEmail = async (Email) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Email', sql.NVarChar(50), Email)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName "+ 
-            "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " + 
-            "WHERE Email = @Email");
+            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName " +
+                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                "WHERE Email = @Email");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -55,9 +55,9 @@ const getByUserame = async (Username) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Username', sql.NVarChar(50), Username)
-            .query("SELECT u.*, uni.UniversityName "+ 
-            "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " + 
-            "WHERE Username = @Username");
+            .query("SELECT u.*, uni.UniversityName " +
+                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                "WHERE Username = @Username");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -75,8 +75,7 @@ const getByUserame = async (Username) => {
 }
 const updateUser = async (body) => {
     try {
-        console.log(body)
-        let { Username, Userpassword, Email, Birthdate, Cinsiyet, Universite, Bolum, UserId, media } = body
+        let { Username, Email, Birthdate, Cinsiyet, Universite, Bolum, UserId, media } = body
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Username', sql.NVarChar(50), Username)
@@ -88,11 +87,11 @@ const updateUser = async (body) => {
             .input('UserId', sql.Int, UserId)
             .input("ProfileImg", sql.NVarChar, media)
             .query("UPDATE TBLUSERS SET Username=@Username,Universite=@Universite,Bolum=@Bolum,Cinsiyet=@Cinsiyet, Birthdate=@Birthdate ,Email=@Email, ProfileImg=@ProfileImg WHERE UserId=@UserId")
-        // insert into TBLUSERS(Username, Userpassword, Universite, Bolum, Cinsiyet, Birthdate, Email) values(@Username, @Userpassword, @Universite, @Bolum, @Cinsiyet, @Birthdate, @Email) where UserId =@UserID ");
+
         if (data.rowsAffected.length > 0) {
             data = await pool.request()
-                .input('Username', sql.NVarChar(50), Username)
-                .query("select * from TBLUSERS where Username=@Username ");
+                .input('UserId', sql.Int, UserId)
+                .query("select * from TBLUSERS where UserId=@UserId ");
             // bu kısım tek requestte de halledilebilir gibi ama kontrolu zor olabilir !Discuss
             // for (let i = 0; i < data.rowsAffected; i++) {
             //     effectedRow.push(data.recordset[i]);
@@ -153,9 +152,9 @@ const getCurrentUser = async (userData) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input("UserId", sql.Int, UserId)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName "+ 
-                   "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " + 
-                   "WHERE UserId = @UserId")
+            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName " +
+                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                "WHERE UserId = @UserId")
         return data.recordset[0]
 
     } catch (error) {
@@ -173,9 +172,9 @@ const changePassword = async (UserId, Password) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input("UserId", sql.Int, UserId)
-            .input("Password",sql.NVarChar(500), Password)
+            .input("Password", sql.NVarChar(500), Password)
             .query("UPDATE TBLUSERS SET Userpassword = @Password WHERE UserId = @UserId")
-        if(data.rowsAffected.length > 0) {
+        if (data.rowsAffected.length > 0) {
             data = await pool.request()
                 .input("UserId", sql.Int, UserId)
                 .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
@@ -192,7 +191,7 @@ const changePassword = async (UserId, Password) => {
     }
 }
 
-const getUserByIdWithPassword = async (userId) => {
+const getUserByIdWithPassword = async (UserId) => {
     try {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
