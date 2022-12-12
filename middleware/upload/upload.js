@@ -11,8 +11,8 @@ const upload = ({ folder }) =>
         var d = String(date.getDate()).padStart(2, "0");
         var m = String(date.getMonth() + 1).padStart(2, "0");
         var y = date.getFullYear();
-        date = d + "-" + m + "-" + y;
-        file.filename = `${uuid.v4().split("-")[0]}.${extension}`;
+        newDate = d + "_" + m + "_" + y;
+        file.filename = `${newDate + "_" + uuid.v4().split("-")[0]}.${extension}`;
         callback(null, file.filename);
       },
     }),

@@ -20,7 +20,8 @@ router
 router.put(
   "/",
   auth.getOnlyUserIdFromTokenToBody,
-  validate(schema.editUserSchema),
+  //validate(schema.editUserSchema),
+  upload(uploadConfig).single("media"),
   userController.EditUser,
   userController.EditUserCookieInfo
 );
