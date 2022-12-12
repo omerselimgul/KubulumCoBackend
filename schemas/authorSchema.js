@@ -5,7 +5,6 @@ const joi = require("joi");
 const getByUserIdSchema = joi.object({
     body: {
         Username: joi.string(),
-        Userpassword: joi.string(),
         UserId: joi.number(),
     },
     query: {},
@@ -14,7 +13,6 @@ const getByUserIdSchema = joi.object({
 const getByKulupIdSchema = joi.object({
     body: {
         Username: joi.string(),
-        Userpassword: joi.string(),
         UserId: joi.number(),
     },
     query: {},
@@ -25,7 +23,6 @@ const addAuthorSchema = joi.object({
         User: joi.required(),
         Club: joi.required(),
         Username: joi.string(),
-        Userpassword: joi.string(),
         UserId: joi.number(),
     },
     query: {},
@@ -36,7 +33,6 @@ const deleteAuthorSchema = joi.object({
         User: joi.required(),
         Club: joi.required(),
         Username: joi.string(),
-        Userpassword: joi.string(),
         UserId: joi.number(),
     },
     query: {},

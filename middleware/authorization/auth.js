@@ -7,9 +7,8 @@ const getAccessToRoute = async (req, res, next) => {
     if (KulubumCo) {
         try {
             const decodedToken = jwt.verify(KulubumCo, process.env.SECRET_KEY)
-            const { Username, Userpassword, UserId } = decodedToken
+            const { Username, UserId } = decodedToken
             req.body.Username = Username
-            req.body.Userpassword = Userpassword
             req.body.UserId = UserId
             return next();
         } catch (error) {

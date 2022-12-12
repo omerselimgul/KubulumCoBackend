@@ -9,10 +9,9 @@ const PostLoginController = async (req, res, next) => {
         if (userInfo && (userInfo?.Userpassword) === Userpassword) {
             const token = jwt.sign({
                 Username: Username,
-                Userpassword: Userpassword,
                 UserId: userInfo.UserId,
-                Birthdate:userInfo.Birthdate,
-                Email:userInfo.Email,
+                Birthdate: userInfo.Birthdate,
+                Email: userInfo.Email,
                 UniversityId: userInfo.Universite,
                 UniversityName: userInfo.UniversityName,
                 Department: userInfo.Bolum,
@@ -64,6 +63,7 @@ const CreateUserControllers = async (req, res, next) => {
         // Register Check
         const data = await userRepository.createdUser(req.body)
         if (data) {
+            delete data?.Userpassword
             return res.status(200).json({ message: "kayit basarili", data: data, success: true })
 
         } else {
