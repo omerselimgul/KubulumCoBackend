@@ -5,6 +5,7 @@ const getListSchema = joi.object({
   body: {},
   query: {
     ...paginateProps,
+    name:joi.string().min(2).max(50)
   },
   params: {},
 });

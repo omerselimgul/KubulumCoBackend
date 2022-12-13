@@ -156,11 +156,38 @@ const update = async (req, res, next) => {
     }
 }
 
+const search = async (req, res, next) => {
+    let userId
+    try {
+        if(req.headers.cookie) {
+            userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1])
+        }
+        if(req.query.name) {
+            const data = await clubRepository.getByClubNameContains(req.query.name, userId)
+            return res.status(200).json({
+                success:true,
+                message:"Klup listelendi",
+                data:data
+            })
+        } else {
+            const data = await clubRepository.getAll(userId)
+            return res.status(200).json({
+                success:true,
+                message:"Klup listelendi",
+                data:data
+            })
+        }
+    } catch(err) {
+        return next(new CustomError(err, 500))
+    } 
+}
+
 module.exports = {
     create,
     list,
     getById,
     getByClubNameContains,
     deleteClub,
-    update
+    update,
+    search
 }

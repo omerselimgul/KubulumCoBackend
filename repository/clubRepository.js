@@ -118,7 +118,7 @@ const getById = async (id) => {
   }
 };
 
-const getByClubNameContains = async (name) => {
+const getByClubNameContains = async (name, userId) => {
   try {
     var pool = await sql.connect(configOdDB);
     var data = await pool
