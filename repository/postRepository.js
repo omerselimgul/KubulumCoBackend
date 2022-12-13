@@ -163,11 +163,30 @@ const remove = async (postId) => {
   }
 }
 
+const getByPostHeaderContains = async (postHeader) => {
+  try {
+    var pool = await sql.connect(configOdDB)
+    var data = await pool.request()
+                          .query(`SELECT p.*, c.ClubName, u.UserName, uni.UniversityName FROM TBLPOSTS p ` +
+                          `INNER JOIN TBLCLUBS AS c ON p.ClubId = c.ClubId ` +
+                          `INNER JOIN TBLUSERS AS u ON p.UserId = u.UserId ` +
+                          `INNER JOIN TBLUNIVERSITIES AS uni ON c.UniversityId = uni.UniversityId ` +
+                          `WHERE p.PostHeader LIKE '%${postHeader}%' `)
+    return data.recordset
+  } catch(err) {
+    throw err
+  } finally {
+    sql?.close()
+    pool?.close()
+  }
+}
+
 module.exports = {
   create,
   getById,
   getAll,
   getByClubId,
   update,
-  remove
+  remove,
+  getByPostHeaderContains
 };

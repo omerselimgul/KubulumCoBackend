@@ -24,7 +24,7 @@ const getByIdSchema = joi.object({
 
 const getAllSchema = joi.object({
   body: { Username: joi.string(), UserId: joi.number() },
-  query: { ...paginateProps },
+  query: { ...paginateProps, postHeader: joi.string() },
   params: {},
 });
 
