@@ -53,6 +53,14 @@ const getByNameContainsSchema = joi.object({
   params: {},
 });
 
+const getByUniversityIdSchema = joi.object({
+  body:{},
+  query:{
+    universityId: joi.string().required(),
+  },
+  params:{}
+})
+
 module.exports = {
   getListSchema,
   createSchema,
@@ -60,4 +68,5 @@ module.exports = {
   deleteSchema,
   updateSchema,
   getByNameContainsSchema,
+  getByUniversityIdSchema
 };
