@@ -182,6 +182,27 @@ const search = async (req, res, next) => {
     } 
 }
 
+const getByUniversityId = async (req, res, next) => {
+    let userId
+    try {
+        const university = await universityRepository.getById(req.query.universityId)
+        if(!university) {
+            return next(new CustomError("Universite bulunamadı", 404))
+        }
+        if(req.headers.cookie) {
+            userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1])
+        }
+        const data = await clubRepository.getByUniversityId(req.query.universityId, userId)
+        return res.status(200).json({
+            success:true,
+            message:"Kulüpler listelendi",
+            data:data
+        })
+    } catch(err) {
+        return next(new CustomError(err, 500))
+    }
+}
+
 module.exports = {
     create,
     list,
@@ -189,5 +210,6 @@ module.exports = {
     getByClubNameContains,
     deleteClub,
     update,
-    search
+    search,
+    getByUniversityId
 }

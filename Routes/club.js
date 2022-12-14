@@ -13,5 +13,6 @@ router.route("/:id").get(validate(schema.getByIdSchema), clubController.getById)
 //router.route("/search/getByNameContains").get(validate(schema.getByNameContainsSchema), clubController.getByClubNameContains)
 router.route("/:id").delete(validate(schema.deleteSchema), clubController.deleteClub)
 router.route("/:id").patch(validate(schema.updateSchema), clubController.update)
+router.route("/search/getByUniversityId").get(validate(schema.getByUniversityIdSchema), clubController.getByUniversityId)
 
 module.exports = router
