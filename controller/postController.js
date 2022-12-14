@@ -46,12 +46,22 @@ const getById = async (req, res, next) => {
 
 const list = async (req, res, next) => {
     try {
-        const data = paginate(req, await postRepository.getAll())
-        return res.status(200).json({
-            success:true,
-            message:"Duyurular listelendi",
-            data:data
-        })
+        if(req.query.postHeader) {
+            const data = paginate(req, await postRepository.getByPostHeaderContains(req.query.postHeader))
+            return res.status(200).json({
+                success:true,
+                message:"Duyurular listelendi",
+                data:data
+            })
+        }   
+        else {
+            const data = paginate(req, await postRepository.getAll())
+            return res.status(200).json({
+                success:true,
+                message:"Duyurular listelendi",
+                data:data
+            })
+        }
 
     } catch(err) {
         return next(new CustomError(err, 500))
