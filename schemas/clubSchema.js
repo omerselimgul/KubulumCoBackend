@@ -56,7 +56,7 @@ const getByNameContainsSchema = joi.object({
 const getByUniversityIdSchema = joi.object({
   body:{},
   query:{
-    universityId: joi.string().required()
+    universityId: joi.string().required(),
   },
   params:{}
 })

@@ -192,7 +192,7 @@ const getByUniversityId = async (universityId, userId) => {
         "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
           "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
           "ON c.UniversityId = u.UniversityId " +
-          "WHERE c.UniversityId=@UniversityId ORDER BY FollowerAmount DESC "
+          "WHERE c.UniversityId=@UniversityId ORDER BY FollowerAmount DESC"
       );
     if (userId) {
       for (let i = 0; i < data.recordset.length; i++) {
