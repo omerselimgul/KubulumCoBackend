@@ -65,7 +65,7 @@ const EditUserCookieInfo = async (req, res, next) => {
                 Username: req?.body?.Username,
                 UserId: req?.body?.UserId,
                 Email: req?.body?.Email,
-                Universite: req.body.University,
+                Universite: req.body.Universite,
                 Birthdate: req.body.Birthdate,
                 Bolum: req.body.Bolum,
                 expiresIn: '1d',
@@ -111,9 +111,10 @@ const changePassword = async (req, res, next) => {
         }
         const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
         if (data) {
+            console.log(data)
             req.body.Username = data?.Username
             req.body.Email = data?.Email
-            req.body.Universite = data?.University
+            req.body.Universite = data?.Universite
             req.body.Birthdate = data?.Birthdate
             req.body.Cinsiyet = data?.Cinsiyet
             req.body.Bolum = data?.Bolum
