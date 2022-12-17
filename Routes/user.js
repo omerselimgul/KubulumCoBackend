@@ -4,8 +4,8 @@ const validate = require("../middleware/validate/validate");
 const auth = require("../middleware/authorization/auth");
 const userController = require("../controller/userController");
 const schema = require("../schemas/userSchema");
-const upload = require("../middleware/upload/upload")
-const uploadConfig = { folder: '/club' }
+const upload = require("../middleware/upload/upload");
+const uploadConfig = { folder: "/club" };
 
 router
   .route("/profile/currentuser")
@@ -22,7 +22,7 @@ router.put(
   "/",
   auth.getOnlyUserIdFromTokenToBody,
   //validate(schema.editUserSchema),
-  upload(uploadConfig).single("media"),
+  //upload(uploadConfig).single("media"),
   auth.getOnlyUserIdFromTokenToBody,
   userController.EditUser,
   userController.EditUserCookieInfo
@@ -37,6 +37,12 @@ router
     userController.EditUserCookieInfo
   );
 
-router.route("/profileimage/update").post(auth.getAccessToRoute)
+router
+  .route("/profileimage/update")
+  .patch(
+    auth.getAccessToRoute,
+    userController.updateProfileImage,
+    userController.EditUserCookieInfo
+  );
 
 module.exports = router;
