@@ -176,17 +176,17 @@ const search = async (req, res, next) => {
       userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1]);
     }
     if (req.query.name) {
-      const data = await clubRepository.getByClubNameContains(
+      const data = paginate(req, await clubRepository.getByClubNameContains(
         req.query.name,
         userId
-      );
+      ))
       return res.status(200).json({
         success: true,
         message: "Klup listelendi",
         data: data,
       });
     } else {
-      const data = await clubRepository.getAll(userId);
+      const data = paginate(req, await clubRepository.getAll(userId))
       return res.status(200).json({
         success: true,
         message: "Klup listelendi",
@@ -210,10 +210,10 @@ const getByUniversityId = async (req, res, next) => {
     if (req.headers.cookie) {
       userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1]);
     }
-    const data = await clubRepository.getByUniversityId(
+    const data = paginate(req, await clubRepository.getByUniversityId(
       req.query.universityId,
       userId
-    );
+    ));
     return res.status(200).json({
       success: true,
       message: "Kulüpler listelendi",
