@@ -49,6 +49,7 @@ const getByNameContainsSchema = joi.object({
   body: {},
   query: {
     name: joi.string().required(),
+    ...paginateProps
   },
   params: {},
 });
@@ -57,6 +58,7 @@ const getByUniversityIdSchema = joi.object({
   body:{},
   query:{
     universityId: joi.string().required(),
+    ...paginateProps
   },
   params:{}
 })
