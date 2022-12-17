@@ -111,7 +111,6 @@ const changePassword = async (req, res, next) => {
         }
         const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
         if (data) {
-            console.log(data)
             req.body.Username = data?.Username
             req.body.Email = data?.Email
             req.body.Universite = data?.Universite
