@@ -14,9 +14,15 @@ const create = async (req, res, next) => {
           message:message
         })
       }
-      if(req.file?.filename) {
-        req.body.media = req.file?.filename
-      }
+      // if(req.file?.filename) {
+      //   req.body.media = req.file?.filename
+      // }
+      
+    if(req.files.media !== null) {
+      const buffer = Buffer.from(req.files?.media.data, 'base64')
+      const base64str = buffer.toString("base64")
+      req.body.media = base64str
+    }
     const data = await universityRepository.createUniversity(req.body);
     if (!data) {
       return res.status(500).json({
