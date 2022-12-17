@@ -11,7 +11,7 @@ router
   .route("/")
   .post(
     auth.getAccessToRoute,
-    upload(uploadConfig).single("media"),
+    //upload(uploadConfig).single("media"),
     clubController.create
   );
 router.route("/").get(validate(schema.getListSchema), clubController.search);

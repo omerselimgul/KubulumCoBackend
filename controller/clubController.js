@@ -5,6 +5,8 @@ const auth = require("../middleware/authorization/auth");
 const paginate = require("../helpers/pagination/paginate");
 const validate = require("../helpers/validate/validate");
 const schema = require("../schemas/clubSchema");
+const fs = require("fs")
+
 
 const create = async (req, res, next) => {
   try {
@@ -34,9 +36,16 @@ const create = async (req, res, next) => {
         message: message,
       });
     }
-    if (req.file?.filename) {
-      req.body.media = req.file?.filename;
+    // if (req.file?.filename) {
+    //   req.body.media = req.file?.filename;
+    // }
+
+    if(req.files.media !== null) {
+      const buffer = Buffer.from(req.files?.media.data, 'base64')
+      const base64str = buffer.toString("base64")
+      req.body.media = base64str
     }
+
     const userId = auth.getUserIdFromToken(req.cookies.KulubumCo);
     req.body = {
       ...req.body,

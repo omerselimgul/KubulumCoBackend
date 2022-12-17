@@ -3,6 +3,8 @@ const joi = require("joi");
 const createSchema = joi.object({
   body: {
     UniversityName: joi.string().required().max(50).min(2),
+    Username:joi.string(),
+    UserId:joi.number()
   },
   query: {},
   params: {},
