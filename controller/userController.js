@@ -37,7 +37,6 @@ const EditUser = async (req, res, next) => {
     try {
 
         const beforeUserData = await userRepository.getById(req.body.UserId)
-        console.log(beforeUserData)
         req.body.Username = req.body.Username ?? beforeUserData.Username
         req.body.Email = req.body.Email ?? beforeUserData.Email
         req.body.Universite = req.body.Universite ?? beforeUserData.UniversityId
