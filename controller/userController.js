@@ -111,6 +111,12 @@ const changePassword = async (req, res, next) => {
         }
         const data = await userRepository.changePassword(req.body.UserId, req.body.newPassword)
         if (data) {
+            req.body.Username = data?.Username
+            req.body.Email = data?.Email
+            req.body.Universite = data?.University
+            req.body.Birthdate = data?.Birthdate
+            req.body.Cinsiyet = data?.Cinsiyet
+            req.body.Bolum = data?.Bolum
             next()
         } else {
             return res.status(500).json({
@@ -127,10 +133,10 @@ const changePassword = async (req, res, next) => {
 const updateProfileImage = async (req, res, next) => {
     try {
         const user = await userRepository.getById(req.body.UserId)
-        if(!user) {
+        if (!user) {
             return next(new CustomError("Kullanıcı bulunamadı.", 404))
         }
-        if(req.files?.media !== undefined) {
+        if (req.files?.media !== undefined) {
             const buffer = Buffer.from(req.files?.media.data, 'base64')
             const base64str = buffer.toString("base64")
             req.body.media = base64str
@@ -138,13 +144,13 @@ const updateProfileImage = async (req, res, next) => {
             return next(new CustomError("Resim yüklenmedi.", 400))
         }
         const data = await userRepository.updateProfileImage(req.body?.media, req.body.UserId)
-        if(!data) {
+        if (!data) {
             return next(new CustomError("Bir hata olustu", 500))
         }
         return res.status(200).json({
-            success:true,
-            message:"Profil resmi güncellendi",
-            data:data
+            success: true,
+            message: "Profil resmi güncellendi",
+            data: data
         })
 
     } catch (err) {
