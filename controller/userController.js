@@ -39,7 +39,7 @@ const EditUser = async (req, res, next) => {
         const beforeUserData = await userRepository.getById(req.body.UserId)
         req.body.Username = req.body.Username ?? beforeUserData.Username
         req.body.Email = req.body.Email ?? beforeUserData.Email
-        req.body.Universite = req.body.Universite ?? beforeUserData.UniversityId
+        req.body.UniversityId = req.body.UniversityId ?? beforeUserData.UniversityId
         req.body.Birthdate = req.body.Birthdate ?? beforeUserData.Birthdate
         req.body.Cinsiyet = req.body.Cinsiyet ?? beforeUserData.Cinsiyet
         req.body.Bolum = req.body.Bolum ?? beforeUserData.Bolum
@@ -64,7 +64,7 @@ const EditUserCookieInfo = async (req, res, next) => {
                 Username: req?.body?.Username,
                 UserId: req?.body?.UserId,
                 Email: req?.body?.Email,
-                Universite: req.body.Universite,
+                UniversityId: req.body.UniversityId,
                 Birthdate: req.body.Birthdate,
                 Bolum: req.body.Bolum,
                 expiresIn: '1d',
@@ -112,7 +112,7 @@ const changePassword = async (req, res, next) => {
         if (data) {
             req.body.Username = data?.Username
             req.body.Email = data?.Email
-            req.body.Universite = data?.Universite
+            req.body.UniversityId = data?.Universite
             req.body.Birthdate = data?.Birthdate
             req.body.Cinsiyet = data?.Cinsiyet
             req.body.Bolum = data?.Bolum
