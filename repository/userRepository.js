@@ -211,6 +211,31 @@ const getUserByIdWithPassword = async (UserId) => {
     }
 }
 
+const updateProfileImage = async (profileImage, userId) => {
+    try {
+        var pool = await sql.connect(configOfDB)
+        var data = await pool.request()
+                                .input("ProfileImage", sql.NVarChar(), profileImage)
+                                .input("UserId", sql.Int, userId)
+                                .query("UPDATE TBLUSERS SET ProfileImg=@ProfileImage WHERE UserId=@UserId")
+        if(data.rowsAffected.length > 0) {
+            data = await pool.request()
+                            .input("UserId", sql.Int, userId)
+                            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, u.ProfileImg, uni.UniversityId, uni.UniversityName " +
+                            "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                            "WHERE UserId = @UserId")
+            return data.recordset[0]
+        } else {
+            return null;
+        }
+    } catch(err) {
+        throw err
+    } finally {
+        sql?.close()
+        pool?.close()
+    }
+}
+
 module.exports = {
     getById,
     getByUserame,
@@ -219,6 +244,7 @@ module.exports = {
     updateUser,
     getCurrentUser,
     changePassword,
-    getUserByIdWithPassword
+    getUserByIdWithPassword,
+    updateProfileImage
 }
 

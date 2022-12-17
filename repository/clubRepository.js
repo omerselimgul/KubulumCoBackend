@@ -11,7 +11,7 @@ const configOdDB = {
 
 const createClub = async (insertData) => {
   try {
-    const { ClubName, ClubMail, UniversityId, Description, UserId, media} =
+    const { ClubName, ClubMail, UniversityId, Description, UserId, media } =
       insertData;
     var pool = await sql.connect(configOdDB);
     var data = await pool
@@ -71,7 +71,7 @@ const getAll = async (userId) => {
     var data = await pool
       .request()
       .query(
-          "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
+        "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
           "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
           "ON c.UniversityId = u.UniversityId " +
           "ORDER BY FollowerAmount DESC"
@@ -108,7 +108,9 @@ const getById = async (id) => {
     var data = await pool
       .request()
       .input("ClubId", sql.Int, id)
-      .query("SELECT c.*, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount FROM TBLCLUBS c WHERE c.ClubId = @ClubId");
+      .query(
+        "SELECT c.*, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount FROM TBLCLUBS c WHERE c.ClubId = @ClubId"
+      );
     return data.recordset[0];
   } catch (err) {
     throw err;
@@ -118,12 +120,14 @@ const getById = async (id) => {
   }
 };
 
-const getByClubNameContains = async (name) => {
+const getByClubNameContains = async (name, userId) => {
   try {
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
-      .query(`SELECT c.*, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount FROM TBLCLUBS c WHERE c.ClubName LIKE '%${name}%' ORDER BY FollowerAmount DESC`);
+      .query(
+        `SELECT c.*, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount FROM TBLCLUBS c WHERE c.ClubName LIKE '%${name}%' ORDER BY FollowerAmount DESC`
+      );
     return data.recordset;
   } catch (err) {
     throw err;
@@ -178,6 +182,44 @@ const update = async (id, updateData) => {
   }
 };
 
+const getByUniversityId = async (universityId, userId) => {
+  try {
+    var pool = await sql.connect(configOdDB);
+    var data = await pool
+      .request()
+      .input("UniversityId", sql.Int, universityId)
+      .query(
+        "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
+          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+          "ON c.UniversityId = u.UniversityId " +
+          "WHERE c.UniversityId=@UniversityId ORDER BY FollowerAmount DESC"
+      );
+    if (userId) {
+      for (let i = 0; i < data.recordset.length; i++) {
+        let followed = false;
+        let followData = await pool
+          .request()
+          .query(
+            `SELECT FollowId FROM TBLFOLLOWS where ClubId = ${data.recordset[i].ClubId} AND UserId = ${userId}`
+          );
+        if (followData.recordset[0]) {
+          followed = true;
+        }
+        data.recordset[i] = {
+          ...data.recordset[i],
+          isFollowed: followed,
+        };
+      }
+    }
+    return data.recordset;
+  } catch (err) {
+    throw err;
+  } finally {
+    pool?.close();
+    sql?.close();
+  }
+};
+
 module.exports = {
   createClub,
   getByEmail,
@@ -186,4 +228,5 @@ module.exports = {
   getByClubNameContains,
   remove,
   update,
+  getByUniversityId
 };

@@ -5,6 +5,7 @@ const getListSchema = joi.object({
   body: {},
   query: {
     ...paginateProps,
+    name:joi.string().min(2).max(50)
   },
   params: {},
 });
@@ -48,9 +49,19 @@ const getByNameContainsSchema = joi.object({
   body: {},
   query: {
     name: joi.string().required(),
+    ...paginateProps
   },
   params: {},
 });
+
+const getByUniversityIdSchema = joi.object({
+  body:{},
+  query:{
+    universityId: joi.string().required(),
+    ...paginateProps
+  },
+  params:{}
+})
 
 module.exports = {
   getListSchema,
@@ -59,4 +70,5 @@ module.exports = {
   deleteSchema,
   updateSchema,
   getByNameContainsSchema,
+  getByUniversityIdSchema
 };

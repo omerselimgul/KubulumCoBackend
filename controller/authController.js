@@ -64,7 +64,17 @@ const CreateUserControllers = async (req, res, next) => {
         const data = await userRepository.createdUser(req.body)
         if (data) {
             delete data?.Userpassword
-            return res.status(200).json({ message: "kayit basarili", data: data, success: true })
+            const token = jwt.sign({
+                Username: data.Username,
+                UserId: data.UserId,
+                Birthdate: data.Birthdate,
+                Email: data.Email,
+                UniversityId: data.Universite,
+                Bolum: data.Bolum,
+                expiresIn: '1d',
+                issuer: 'www.kulubum.co'
+            }, process.env.SECRET_KEY)
+            return res.status(200).cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000 }).json({ message: "kayit basarili", data: data, success: true })
 
         } else {
             next(new CustomError("Kayitta hata olustu daha sonra tekrar deneyiniz!", 400))
