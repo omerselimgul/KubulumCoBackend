@@ -63,6 +63,7 @@ const EditUserCookieInfo = async (req, res, next) => {
             const token = jwt.sign({
                 Username: req?.body?.Username,
                 UserId: req?.body?.UserId,
+                Email: req.body.Email,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
@@ -120,7 +121,31 @@ const changePassword = async (req, res, next) => {
 
 
 const updateProfileImage = async (req, res, next) => {
+    try {
+        const user = await userRepository.getById(req.body.UserId)
+        if(!user) {
+            return next(new CustomError("Kullanıcı bulunamadı.", 404))
+        }
+        if(req.files?.media !== undefined) {
+            const buffer = Buffer.from(req.files?.media.data, 'base64')
+            const base64str = buffer.toString("base64")
+            req.body.media = base64str
+        } else {
+            return next(new CustomError("Resim yüklenmedi.", 400))
+        }
+        const data = await userRepository.updateProfileImage(req.body?.media, req.body.UserId)
+        if(!data) {
+            return next(new CustomError("Bir hata olustu", 500))
+        }
+        return res.status(200).json({
+            success:true,
+            message:"Profil resmi güncellendi",
+            data:data
+        })
 
+    } catch (err) {
+        return next(new CustomError(err, 500))
+    }
 }
 
 module.exports = {
@@ -128,5 +153,6 @@ module.exports = {
     getById,
     EditUser,
     EditUserCookieInfo,
-    changePassword
+    changePassword,
+    updateProfileImage
 }
