@@ -37,10 +37,9 @@ const EditUser = async (req, res, next) => {
     try {
 
         const beforeUserData = await userRepository.getById(req.body.UserId)
-
         req.body.Username = req.body.Username ?? beforeUserData.Username
         req.body.Email = req.body.Email ?? beforeUserData.Email
-        req.body.Universite = req.body.University ?? beforeUserData.UniversityId
+        req.body.Universite = req.body.Universite ?? beforeUserData.UniversityId
         req.body.Birthdate = req.body.Birthdate ?? beforeUserData.Birthdate
         req.body.Cinsiyet = req.body.Cinsiyet ?? beforeUserData.Cinsiyet
         req.body.Bolum = req.body.Bolum ?? beforeUserData.Bolum
