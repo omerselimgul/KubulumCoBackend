@@ -15,6 +15,7 @@ const PostLoginController = async (req, res, next) => {
                 UniversityId: userInfo.Universite,
                 UniversityName: userInfo.UniversityName,
                 Department: userInfo.Bolum,
+                Cinsiyet: userInfo.Cinsiyet,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
