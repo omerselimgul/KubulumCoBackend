@@ -61,6 +61,7 @@ const EditUserCookieInfo = async (req, res, next) => {
     try {
 
         if (req?.body?.Username && req?.body?.UserId) {
+            console.log(req.body)
             const token = jwt.sign({
                 Username: req?.body?.Username,
                 UserId: req?.body?.UserId,
@@ -68,6 +69,7 @@ const EditUserCookieInfo = async (req, res, next) => {
                 UniversityId: req.body.UniversityId,
                 Birthdate: req.body.Birthdate,
                 Bolum: req.body.Bolum,
+                Cinsiyet: req.body.Cinsiyet,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
