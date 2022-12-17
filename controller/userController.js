@@ -59,6 +59,7 @@ const EditUser = async (req, res, next) => {
 }
 const EditUserCookieInfo = async (req, res, next) => {
     try {
+
         if (req?.body?.Username && req?.body?.UserId) {
             const token = jwt.sign({
                 Username: req?.body?.Username,
