@@ -4,6 +4,8 @@ const paginateProps = require("./paginationSchema")
 const followSchema = joi.object({
   body: {
     ClubId: joi.number().required(),
+    Username: joi.string(),
+    UserId: joi.number(),
   },
   query: {},
   params: {},
@@ -11,7 +13,7 @@ const followSchema = joi.object({
 
 const getFollowListByUserIdSchema = joi.object({
   body: {},
-  query: { userId: joi.string().required(), ...paginateProps  },
+  query: { userId: joi.string(), ...paginateProps  },
   params: {},
 });
 
