@@ -3,6 +3,7 @@ const followRepository = require("../repository/followRepository");
 const clubRepository = require("../repository/clubRepository");
 const userRepository = require("../repository/userRepository");
 const paginate = require("../helpers/pagination/paginate")
+const auth = require("../middleware/authorization/auth")
 
 const follow = async (req, res, next) => {
   try {
@@ -55,16 +56,25 @@ const follow = async (req, res, next) => {
 };
 
 const getFollowListByUserId = async (req, res, next) => {
-  try {
+  let userId;
+  try { 
+    if (!req.query.userId) {
+      if(!req.headers.cookie) {
+        return next(new CustomError("hem query hem de cookie içinde userid yok.", 400))
+      }
+      userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1]);
+    } else {
+      userId = req.query.userId
+    }
     // check if user exists
-    const user = await userRepository.getById(req.query.userId)
+    const user = await userRepository.getById(userId)
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "Kullanıcı bulunamadı",
       });
     }
-    const data = paginate(req, await followRepository.getFollowsByUserId(req.query.userId));
+    const data = paginate(req, await followRepository.getFollowsByUserId(userId));
     return res.status(200).json({
       success: true,
       message: "Takipler listelendi",
