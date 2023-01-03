@@ -18,10 +18,10 @@ router
   .get(validate(schema.getByIdSchema), postController.getById);
 
 router.route("/").get(validate(schema.getAllSchema), postController.list);
-
+router.route("/getuserid/follow").get(auth.getAccessToRoute, postController.getByUserId)
 router.route("/search/getByClubId").get(validate(schema.getByClubIdSchema), postController.getByClubId)
+router.route("/getbyuniversityid/:id").get(validate(schema.getByUniversiteIdSchema), postController.getByUniversiteId)
 router.route("/:id").patch(auth.getAccessToRoute, validate(schema.updateSchema), postController.update)
-router.route("/:id").delete(auth.getAccessToRoute, validate(schema.deleteSchema), postController.deletePost)
-
+router.route("/:id").delete(auth.getAccessToRoute, validate(schema.getByUniversiteIdSchema), postController.getByUniversiteId)
 
 module.exports = router;

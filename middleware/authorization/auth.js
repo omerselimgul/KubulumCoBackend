@@ -10,6 +10,7 @@ const getAccessToRoute = async (req, res, next) => {
             const { Username, UserId } = decodedToken
             req.body.Username = Username
             req.body.UserId = UserId
+
             return next();
         } catch (error) {
             return next(new CustomError(error, 400))

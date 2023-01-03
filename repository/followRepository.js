@@ -18,23 +18,9 @@ const createFollow = async (insertData) => {
       .input("UserId", sql.Int, UserId)
       .input("ClubId", sql.Int, ClubId)
       .query(
-        "INSERT INTO TBLFOLLOWS (UserId, ClubId) VALUES (@UserId, @ClubId)"
+        "exec createFollow @UserId=@UserId,@ClubId=@ClubId"
       );
     if (data.rowsAffected.length > 0) {
-      data = await pool
-        .request()
-        .input("UserId", sql.Int, UserId)
-        .input("ClubId", sql.Int, ClubId)
-        .query(
-          "SELECT f.FollowId, u.Username, u.UserId, c.ClubId, c.ClubName, uni.UniversityName " +
-            "FROM TBLFOLLOWS AS f INNER JOIN TBLUSERS AS u " +
-            "ON f.UserId = u.UserId " +
-            "INNER JOIN TBLCLUBS as c " +
-            "ON f.ClubId = c.ClubId " +
-            "INNER JOIN TBLUNIVERSITIES AS uni " +
-            "ON c.UniversityId = uni.UniversityId " +
-            "WHERE f.UserId = @UserId AND f.ClubId = @ClubId"
-        );
       return data.recordset[0];
     } else {
       return null;
@@ -56,7 +42,7 @@ const getByUserIdAndClubId = async (searchData) => {
       .input("UserId", sql.Int, UserId)
       .input("ClubId", sql.Int, ClubId)
       .query(
-        "SELECT * FROM TBLFOLLOWS WHERE UserId = @UserId AND ClubId = @ClubId"
+        "exec getByUserIdAndClubId @UserId=@UserId,@ClubId=@ClubId"
       );
     return data.recordset[0];
   } catch (err) {
@@ -76,8 +62,13 @@ const remove = async (removeData) => {
       .input("UserId", sql.Int, UserId)
       .input("ClubId", sql.Int, ClubId)
       .query(
-        "DELETE FROM TBLFOLLOWS WHERE UserId = @UserId AND ClubId = @ClubId"
+        "exec removeFollows  @UserId = @UserId ,@ClubId = @ClubId"
       );
+    if (data.rowsAffected.length > 0) {
+      return true
+    } else {
+      return false
+    }
   } catch (err) {
     throw err;
   } finally {
@@ -93,19 +84,14 @@ const getFollowsByUserId = async (userId) => {
       .request()
       .input("UserId", sql.Int, userId)
       .query(
-        "SELECT f.FollowId, u.Username, u.UserId, c.ClubName, c.ClubId, uni.UniversityName " +
-          "FROM TBLFOLLOWS AS f INNER JOIN TBLUSERS AS u " +
-          "ON f.UserId = u.UserId " +
-          "INNER JOIN TBLCLUBS AS c " +
-          "ON f.ClubId = c.ClubId " +
-          "INNER JOIN TBLUNIVERSITIES AS uni " +
-          "ON c.UniversityId = uni.UniversityId " +
-          "WHERE f.UserId = @UserId"
+        "exec getFollowsByUserId @UserId=@UserId"
       );
     return data.recordset;
   } catch (err) {
     throw err;
   } finally {
+    sql?.close()
+    pool?.close()
   }
 };
 
@@ -116,13 +102,9 @@ const getFollowersByClubId = async (clubId) => {
       .request()
       .input("ClubId", sql.Int, clubId)
       .query(
-        "SELECT f.FollowId, u.Username, u.UserId, c.ClubName, c.ClubId, uni.UniversityName " +
-          "FROM TBLFOLLOWS AS f INNER JOIN TBLUSERS AS u ON f.UserId = u.UserId " +
-          "INNER JOIN TBLCLUBS AS c ON f.ClubId = c.ClubId " +
-          "INNER JOIN TBLUNIVERSITIES AS uni ON c.UniversityId = uni.UniversityId " +
-          "WHERE f.ClubId = @ClubId"
+        "exec getFollowersByClubId @ClubId = @ClubId"
       );
-      return data.recordset
+    return data.recordset
   } catch (err) {
     throw err;
   } finally {

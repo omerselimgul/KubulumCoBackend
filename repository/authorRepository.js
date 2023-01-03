@@ -14,7 +14,7 @@ const deleteAuthor = async (data) => {
         var data = await pool.request()
             .input('UserId', sql.Int, User)
             .input('ClubId', sql.Int, Club)
-            .query("delete from TBLCLUBADMIN where UserId=@UserId and ClubId=@ClubId");
+            .query("exec deleteAuthor @UserId=@UserId,@ClubId=@ClubId");
 
         if (data.rowsAffected.length > 0) {
             return data.recordset;
@@ -25,8 +25,8 @@ const deleteAuthor = async (data) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 const addAuthor = async (data) => {
@@ -36,7 +36,7 @@ const addAuthor = async (data) => {
         var data = await pool.request()
             .input('UserId', sql.Int, User)
             .input('ClubId', sql.Int, Club)
-            .query("insert into TBLCLUBADMIN (UserId,ClubId) values (@UserId,@ClubId)");
+            .query("exec addAuthor @UserId=@UserId,@ClubId=@ClubId");
         if (data.rowsAffected.length > 0) {
             return data.recordset;
         }
@@ -46,8 +46,8 @@ const addAuthor = async (data) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 const getByUserId = async (UserId) => {
@@ -55,7 +55,7 @@ const getByUserId = async (UserId) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('UserId', sql.Int, UserId)
-            .query("select UserId,TBLCLUBS.ClubId,ClubName,ClubMail,UniversityId,Description from TBLCLUBADMIN inner join TBLCLUBS on TBLCLUBS.ClubId= TBLCLUBADMIN.ClubId where UserId=@UserId");
+            .query("exec getByUserId @UserId=@UserId");
         if (data.rowsAffected.length > 0) {
             return data.recordset;
         }
@@ -65,8 +65,8 @@ const getByUserId = async (UserId) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 const getByClubId = async (ClubId) => {
@@ -84,8 +84,8 @@ const getByClubId = async (ClubId) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 module.exports = {
