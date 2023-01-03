@@ -38,7 +38,7 @@ const follow = async (req, res, next) => {
         success: true,
         message: "Kulup takip edildi",
         data: data,
-        followStatus:true
+        followStatus: true
       });
     } else {
       // kullanıcı kulubu takip ediyor, takibi geri çek
@@ -47,7 +47,7 @@ const follow = async (req, res, next) => {
         success: true,
         message: "Takip bırakıldı",
         data: followData,
-        followStatus:false
+        followStatus: false
       });
     }
   } catch (err) {
@@ -57,9 +57,9 @@ const follow = async (req, res, next) => {
 
 const getFollowListByUserId = async (req, res, next) => {
   let userId;
-  try { 
+  try {
     if (!req.query.userId) {
-      if(!req.headers.cookie) {
+      if (!req.headers.cookie) {
         return next(new CustomError("hem query hem de cookie içinde userid yok.", 400))
       }
       userId = await auth.getUserIdFromToken(req.headers.cookie.split("=")[1]);
@@ -67,14 +67,22 @@ const getFollowListByUserId = async (req, res, next) => {
       userId = req.query.userId
     }
     // check if user exists
-    const user = await userRepository.getById(userId)
+    const user = userRepository.getById(userId).then(// bazı hatalar var düzeltilmesi gereken Büyük problemler
+      res => res
+    )
+      .catch(err => {
+        return next(new CustomError(err, 500));
+      })
+
     if (!user) {
       return res.status(404).json({
         success: false,
         message: "Kullanıcı bulunamadı",
       });
     }
+
     const data = paginate(req, await followRepository.getFollowsByUserId(userId));
+
     return res.status(200).json({
       success: true,
       message: "Takipler listelendi",

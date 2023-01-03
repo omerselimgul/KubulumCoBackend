@@ -55,7 +55,7 @@ const getByEmail = async (mail) => {
     var data = await pool
       .request()
       .input("ClubMail", sql.NVarChar(50), mail)
-      .query("SELECT * FROM TBLCLUBS WHERE ClubMail = @ClubMail");
+      .query("exec getByEmail @ClubMail = @ClubMail");
     return data.recordset[0];
   } catch (err) {
     throw err;
@@ -72,9 +72,9 @@ const getAll = async (userId) => {
       .request()
       .query(
         "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
-          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
-          "ON c.UniversityId = u.UniversityId " +
-          "ORDER BY FollowerAmount DESC"
+        "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+        "ON c.UniversityId = u.UniversityId " +
+        "ORDER BY FollowerAmount DESC"
       );
     if (userId) {
       for (let i = 0; i < data.recordset.length; i++) {
@@ -143,7 +143,7 @@ const remove = async (id) => {
     var data = await pool
       .request()
       .input("ClubId", sql.Int, id)
-      .query("DELETE FROM TBLCLUBS WHERE ClubId = @ClubId");
+      .query("exec removeClub @ClubId=@ClubId");
   } catch (err) {
     throw err;
   } finally {
@@ -163,13 +163,14 @@ const update = async (id, updateData) => {
       .input("ClubMail", sql.NVarChar(50), ClubMail)
       .input("Description", sql.NVarChar(1000), Description)
       .query(
+        // "exec updateClub @ClubName=@ClubName, @ClubMail = @ClubMail, @Description = @Description  ,@ClubId = @ClubId "
         "UPDATE TBLCLUBS SET ClubName=@ClubName, ClubMail = @ClubMail, Description = @Description WHERE ClubId = @ClubId"
       );
     if (data.rowsAffected.length > 0) {
       data = await pool
         .request()
         .input("ClubId", sql.Int, id)
-        .query("SELECT * FROM TBLCLUBS WHERE ClubId = @ClubId");
+        .query("SELECT * FROM TBLCLUBS WHERE ClubId = @ClubId"); // burada hata alısıyor o yüzden böyle kalsın
       return data.recordset[0];
     } else {
       return null;
@@ -190,9 +191,9 @@ const getByUniversityId = async (universityId, userId) => {
       .input("UniversityId", sql.Int, universityId)
       .query(
         "SELECT c.ClubId, (SELECT COUNT(*) FROM TBLFOLLOWS WHERE ClubId = c.ClubId) AS FollowerAmount, c.ClubName, c.ClubMail, c.UniversityId, c.ClubImage, c.Description, u.UniversityName, u.UniversityLogo " +
-          "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
-          "ON c.UniversityId = u.UniversityId " +
-          "WHERE c.UniversityId=@UniversityId ORDER BY FollowerAmount DESC"
+        "FROM TBLCLUBS c INNER JOIN TBLUNIVERSITIES AS u " +
+        "ON c.UniversityId = u.UniversityId " +
+        "WHERE c.UniversityId=@UniversityId ORDER BY FollowerAmount DESC"
       );
     if (userId) {
       for (let i = 0; i < data.recordset.length; i++) {

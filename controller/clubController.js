@@ -40,7 +40,7 @@ const create = async (req, res, next) => {
     //   req.body.media = req.file?.filename;
     // }
 
-    if (req.files.media !== null) {
+    if (req.files && req.files.media !== null) {
       const buffer = Buffer.from(req.files?.media.data, 'base64')
       const base64str = buffer.toString("base64")
       req.body.media = base64str

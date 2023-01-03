@@ -4,8 +4,14 @@ const validate = require("../middleware/validate/validate");
 const auth = require("../middleware/authorization/auth");
 const userController = require("../controller/userController");
 const schema = require("../schemas/userSchema");
+
 const upload = require("../middleware/upload/upload");
 const uploadConfig = { folder: "/club" };
+
+// router.get("/getprofileimage", auth.getAccessToRoute, userController.getProfileImage)
+router.get("/getprofileimage", auth.getAccessToRoute, userController.getProfileImage, (req, res, send) => {
+  res.send("basarılı")
+})
 
 router
   .route("/profile/currentuser")
@@ -21,9 +27,8 @@ router
 router.put(
   "/",
   auth.getOnlyUserIdFromTokenToBody,
-  //validate(schema.editUserSchema),
+  // validate(schema.editUserSchema),
   //upload(uploadConfig).single("media"),
-  auth.getOnlyUserIdFromTokenToBody,
   userController.EditUser,
   userController.EditUserCookieInfo
 );
@@ -36,6 +41,7 @@ router
     userController.changePassword,
     userController.EditUserCookieInfo
   );
+
 
 router
   .route("/profileimage/update")

@@ -12,22 +12,23 @@ const configOdDB = {
 // sql query
 const createUniversity = async (insertData) => {
   try {
-    const { UniversityName, media} = insertData;
+    const { UniversityName, media } = insertData;
+
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
       .input("UniversityName", sql.NVarChar(50), UniversityName)
       .input("Media", sql.NVarChar, media)
       .query(
-        "INSERT INTO TBLUNIVERSITIES (UniversityName, UniversityLogo) values (@UniversityName, @Media)"
+        "exec createUniversity @UniversityName=@UniversityName, @Media= @Media"
       );
     if (data.rowsAffected.length > 0) {
-      data = await pool
-        .request()
-        .input("UniversityName", sql.NVarChar(), UniversityName)
-        .query(
-          "select * from TBLUNIVERSITIES where UniversityName = @UniversityName"
-        );
+      // data = await pool
+      //   .request()
+      //   .input("UniversityName", sql.NVarChar(), UniversityName)
+      //   .query(
+      //     "select * from TBLUNIVERSITIES where UniversityName = @UniversityName"
+      //   );
       return data.recordset[0];
     } else {
       return null;
@@ -43,7 +44,7 @@ const createUniversity = async (insertData) => {
 const getAllUniversities = async () => {
   try {
     var pool = await sql.connect(configOdDB);
-    var data = await pool.request().query("SELECT u.*, (SELECT COUNT(*) FROM TBLCLUBS WHERE UniversityId = u.UniversityId) AS ClubAmount FROM TBLUNIVERSITIES u ");
+    var data = await pool.request().query("exec getAllUniversities");
     return data.recordset;
   } catch (err) {
     throw err;
@@ -58,7 +59,7 @@ const getById = async (id) => {
     var pool = await sql.connect(configOdDB);
     var data = await pool
       .request()
-     // .input("UniversityId", sql.Int, id)
+      // .input("UniversityId", sql.Int, id)
       .query(`SELECT u.*, (SELECT COUNT(*) FROM TBLCLUBS WHERE UniversityId=${id}) AS ClubAmount FROM TBLUNIVERSITIES u WHERE UniversityId=${id}`);
     return data.recordset[0]
   } catch (err) {

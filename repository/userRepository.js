@@ -12,9 +12,7 @@ const getById = async (UserId) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('UserId', sql.Int, UserId)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, u.ProfileImg, uni.UniversityId, uni.UniversityName " +
-                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
-                "WHERE UserId = @UserId");
+            .query("exec getById @UserId=@UserId");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -24,8 +22,8 @@ const getById = async (UserId) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 const getByEmail = async (Email) => {
@@ -33,9 +31,7 @@ const getByEmail = async (Email) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Email', sql.NVarChar(50), Email)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName " +
-                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
-                "WHERE Email = @Email");
+            .query("exec getByEmailUser @Email=@Email");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -45,8 +41,8 @@ const getByEmail = async (Email) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 const getByUserame = async (Username) => {
@@ -55,9 +51,7 @@ const getByUserame = async (Username) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('Username', sql.NVarChar(50), Username)
-            .query("SELECT u.*, uni.UniversityName " +
-                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
-                "WHERE Username = @Username");
+            .query("exec getByUserame @Username=@Username");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -68,8 +62,8 @@ const getByUserame = async (Username) => {
         throw error;
     } finally {
 
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
 
     }
 }
@@ -80,18 +74,17 @@ const updateUser = async (body) => {
         var data = await pool.request()
             .input('Username', sql.NVarChar(50), Username)
             .input('Email', sql.NVarChar(50), Email)
-            .input('Universite', sql.Int, UniversityId)
+            .input('UniversityId', sql.Int, UniversityId)
             .input('Birthdate', sql.Date, Birthdate)
             .input('Cinsiyet', sql.NVarChar(5), Cinsiyet)
             .input('Bolum', sql.NVarChar(50), Bolum)
             .input('UserId', sql.Int, UserId)
             .input("ProfileImg", sql.NVarChar, media)
-            .query("UPDATE TBLUSERS SET Username=@Username,Universite=@Universite,Bolum=@Bolum,Cinsiyet=@Cinsiyet, Birthdate=@Birthdate ,Email=@Email, ProfileImg=@ProfileImg WHERE UserId=@UserId")
-
+            .query("exec editUser @Username =@Username,@UniversityId=@UniversityId,@Department=@Bolum, @Gender=@Cinsiyet, @Birthdate =@Birthdate,@Email =@Email,@ProfileImg =@ProfileImg,@UserId =@UserId")
         if (data.rowsAffected.length > 0) {
-            data = await pool.request()
-                .input('UserId', sql.Int, UserId)
-                .query("select * from TBLUSERS where UserId=@UserId ");
+            // data = await pool.request()
+            //     .input('UserId', sql.Int, UserId)
+            //     .query("select * from TBLUSERS where UserId=@UserId ");
             // bu kısım tek requestte de halledilebilir gibi ama kontrolu zor olabilir !Discuss
             // for (let i = 0; i < data.rowsAffected; i++) {
             //     effectedRow.push(data.recordset[i]);
@@ -107,8 +100,8 @@ const updateUser = async (body) => {
         throw error;
     } finally {
 
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
 
     }
 }
@@ -121,11 +114,12 @@ const createdUser = async (body) => {
             .input('Userpassword', sql.NVarChar(500), Userpassword)
             .input('Email', sql.NVarChar(50), Email)
             .input('Universite', sql.Int, Universite)
-            .query("Insert Into TBLUSERS (Username,Userpassword,Email,Universite, ProfileImg) Values (@Username,@Userpassword,@Email,@Universite, 'default.png') ");
+            .query("exec createdUser @Username=@Username,@Userpassword=@Userpassword,@Universite=@Universite,@Email=@Email");
+
         if (data.rowsAffected.length > 0) {
-            data = await pool.request()
-                .input('Username', sql.NVarChar(50), Username)
-                .query("select * from TBLUSERS where Username=@Username ");
+            // data = await pool.request()
+            // .input('Username', sql.NVarChar(50), Username)
+            // .query("select * from TBLUSERS where Username=@Username ");
             // bu kısım tek requestte de halledilebilir gibi ama kontrolu zor olabilir !Discuss
             // for (let i = 0; i < data.rowsAffected; i++) {
             //     effectedRow.push(data.recordset[i]);
@@ -140,8 +134,8 @@ const createdUser = async (body) => {
         throw error;
     } finally {
 
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
 
     }
 }
@@ -152,17 +146,15 @@ const getCurrentUser = async (userData) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input("UserId", sql.Int, UserId)
-            .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, uni.UniversityName " +
-                "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
-                "WHERE UserId = @UserId")
+            .query("exec getCurrentUser @UserId=@UserId")
         return data.recordset[0]
 
     } catch (error) {
         throw error;
     } finally {
 
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
 
     }
 }
@@ -173,11 +165,11 @@ const changePassword = async (UserId, Password) => {
         var data = await pool.request()
             .input("UserId", sql.Int, UserId)
             .input("Password", sql.NVarChar(500), Password)
-            .query("UPDATE TBLUSERS SET Userpassword = @Password WHERE UserId = @UserId")
+            .query("exec changePassword @UserId = @UserId,@Password=@Password")
         if (data.rowsAffected.length > 0) {
-            data = await pool.request()
-                .input("UserId", sql.Int, UserId)
-                .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
+            // data = await pool.request()
+            //     .input("UserId", sql.Int, UserId)
+            //     .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId")
             return data.recordset[0] // db de hata oldumu onu denetlemek için. frontend tarafına gönderilmeyecek
         }
         return null;
@@ -186,8 +178,8 @@ const changePassword = async (UserId, Password) => {
         throw error;
     } finally {
 
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 
@@ -196,7 +188,7 @@ const getUserByIdWithPassword = async (UserId) => {
         var pool = await sql.connect(configOfDB);
         var data = await pool.request()
             .input('UserId', sql.Int, UserId)
-            .query("SELECT * FROM TBLUSERS WHERE UserId = @UserId");
+            .query("exec getUserByIdWithPassword @UserId=@UserId");
         if (data.rowsAffected.length > 0) {
             return data.recordset[0];
         }
@@ -206,8 +198,8 @@ const getUserByIdWithPassword = async (UserId) => {
     } catch (error) {
         throw error;
     } finally {
-        pool?.close;
-        sql?.close;
+        pool?.close();
+        sql?.close();
     }
 }
 
@@ -221,8 +213,8 @@ const updateProfileImage = async (profileImage, userId) => {
         if (data.rowsAffected.length > 0) {
             data = await pool.request()
                 .input("UserId", sql.Int, userId)
-                .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Cinsiyet, u.Bolum, u.ProfileImg, uni.UniversityId, uni.UniversityName " +
-                    "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.Universite = uni.UniversityId " +
+                .query("SELECT u.UserId, u.Username, u.Email, u.Birthdate, u.Gender, u.Department, u.ProfileImg, uni.UniversityId, uni.UniversityName " +
+                    "FROM TBLUSERS u INNER JOIN TBLUNIVERSITIES AS uni ON u.UniversityId = uni.UniversityId " +
                     "WHERE UserId = @UserId")
             return data.recordset[0]
         } else {
@@ -235,7 +227,24 @@ const updateProfileImage = async (profileImage, userId) => {
         pool?.close()
     }
 }
-
+const getProfileImg = async (userId) => {
+    try {
+        var pool = await sql.connect(configOfDB)
+        var data = await pool.request()
+            .input("UserId", sql.Int, userId)
+            .query("Select  ProfileImg from TBLUSERS where UserId=@UserId")
+        if (data.rowsAffected.length > 0) {
+            return data.recordset[0]
+        } else {
+            return null;
+        }
+    } catch (err) {
+        throw err
+    } finally {
+        sql?.close()
+        pool?.close()
+    }
+}
 module.exports = {
     getById,
     getByUserame,
@@ -245,6 +254,7 @@ module.exports = {
     getCurrentUser,
     changePassword,
     getUserByIdWithPassword,
-    updateProfileImage
+    updateProfileImage,
+    getProfileImg
 }
 

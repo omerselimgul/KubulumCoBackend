@@ -12,14 +12,16 @@ const fileUpload = require("express-fileupload")
 app.use(cors({ origin: true, credentials: true })) // Use this after the variable declaration
 app.use(cookieParser())
 
+
+
+
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-app.use(fileUpload())
 
 dotenv.config({
     path: "./config/config.env"
 })
-
+app.use(fileUpload())
 
 app.use("/api", routers)
 app.use(customErrorHandler)

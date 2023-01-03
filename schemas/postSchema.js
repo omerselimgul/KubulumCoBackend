@@ -36,14 +36,14 @@ const getByClubIdSchema = joi.object({
 
 const updateSchema = joi.object({
 
-  body: { 
-    Username: joi.string(), 
+  body: {
+    Username: joi.string(),
     UserId: joi.number(),
     PostHeader: joi.string().max(50).min(10),
-    PostText:joi.string().max(300).min(10)
+    PostText: joi.string().max(300).min(10)
   },
   query: {},
-  params: {id:joi.string().required()},
+  params: { id: joi.string().required() },
 })
 
 const deleteSchema = joi.object({
@@ -54,12 +54,19 @@ const deleteSchema = joi.object({
   query: {},
   params: { id: joi.string().required() },
 })
+const getByUniversiteIdSchema = joi.object({
+  body: {
 
+  },
+  query: {},
+  params: { id: joi.string().required() },
+})
 module.exports = {
   createSchema,
   getByIdSchema,
   getAllSchema,
   getByClubIdSchema,
   updateSchema,
-  deleteSchema
+  deleteSchema,
+  getByUniversiteIdSchema
 };

@@ -12,10 +12,10 @@ const PostLoginController = async (req, res, next) => {
                 UserId: userInfo.UserId,
                 Birthdate: userInfo.Birthdate,
                 Email: userInfo.Email,
-                UniversityId: userInfo.Universite,
+                UniversityId: userInfo.UniversityId,
                 UniversityName: userInfo.UniversityName,
-                Bolum: userInfo.Bolum,
-                Cinsiyet: userInfo.Cinsiyet,
+                Bolum: userInfo.Department,
+                Cinsiyet: userInfo.Gender,
                 expiresIn: '1d',
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
@@ -70,9 +70,10 @@ const CreateUserControllers = async (req, res, next) => {
                 UserId: data.UserId,
                 Birthdate: data.Birthdate,
                 Email: data.Email,
-                UniversityId: data.Universite,
-                Bolum: data.Bolum,
+                UniversityId: data.UniversityId,
+                Bolum: data.Department,
                 expiresIn: '1d',
+                Cinsiyet: data.Gender,
                 issuer: 'www.kulubum.co'
             }, process.env.SECRET_KEY)
             return res.status(200).cookie('KulubumCo', token, { maxAge: 24 * 60 * 60 * 1000 }).json({ message: "kayit basarili", data: data, success: true })
